@@ -1,5 +1,32 @@
 # vivonet
 
+## Web APP Deployment
+
+### Local Machine Deploy
+
+#### Download Code
+
+```
+git clone https://github.com/Amar-Chaudhari/vivonet.git vivonet
+cd vivonet
+git pull
+```
+
+#### Install Dependencies
+
+```
+We require Python 2.7 to be installed
+python -V
+cd vivonet/vivonet_site
+pip install -r requirements.txt
+```
+
+#### Run Built-In Server
+
+```
+python manage.py migrate
+python manage.py runserver
+```
 
 ## Installations
 
