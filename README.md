@@ -28,7 +28,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-## Installations
+## Installations (Other)
 
 ### Create Loopback Interfaces CentOS ###
 ```
