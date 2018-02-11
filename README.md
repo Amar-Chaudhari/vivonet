@@ -21,11 +21,19 @@ cd vivonet/vivonet_site
 pip install -r requirements.txt
 ```
 
-#### Run Built-In Server
+#### Run Development Server
 
 ```
 python manage.py migrate
 python manage.py runserver
+```
+
+### Admin Panel Access (Create/Delete Entries in Database)
+
+```
+http://127.0.0.1:8000/admin/
+Username: admin
+Password: Super123
 ```
 
 ## Installations (Other)
