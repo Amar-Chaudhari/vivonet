@@ -55,6 +55,8 @@ git pull
 rm -rf /opt/webapp/vivonet_site/
 cp -rf vivonet_site /opt/webapp/
 cd /opt/webapp/vivonet_site/
+python manage.py makemigrations
+python manage.py migrate
 python manage.py collectstatic
 systemctl restart gunicorn
 systemctl restart nginx
