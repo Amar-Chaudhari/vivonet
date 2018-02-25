@@ -35,7 +35,7 @@ if "front-server" in hostname:
     #SESSION_COOKIE_SECURE = True
     #CSRF_COOKIE_DOMAIN = '.serverbundle.com'
     #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
-    LOG_FILE = "/var/log/django_logs/"
+    LOG_FILE = "/var/log/django_logs/vivonet_site.log"
 
     # Database
     # if code is running on the server, we use mariadb
@@ -203,5 +203,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, "main/static")
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = "/static/"
