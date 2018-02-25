@@ -35,7 +35,7 @@ if "front-server" in hostname:
     #SESSION_COOKIE_SECURE = True
     #CSRF_COOKIE_DOMAIN = '.serverbundle.com'
     #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
-    #LOG_FILE = "/var/logs/django_logs/"
+    LOG_FILE = "/var/log/django_logs/"
 
     # Database
     # if code is running on the server, we use mariadb
