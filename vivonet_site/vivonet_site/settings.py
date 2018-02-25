@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 hostname = socket.gethostname()
-if "front-end" in hostname:
+if "front-server" in hostname:
     DEBUG = False
     PREPEND_WWW = True
     USE_X_FORWARDED_HOST = True
