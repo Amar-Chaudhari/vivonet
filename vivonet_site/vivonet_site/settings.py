@@ -29,7 +29,7 @@ ALLOWED_HOSTS = ['*']
 hostname = socket.gethostname()
 if "front-server" in hostname:
     DEBUG = False
-    PREPEND_WWW = True
+    #PREPEND_WWW = True
     USE_X_FORWARDED_HOST = True
     CSRF_COOKIE_SECURE = True
     #SESSION_COOKIE_SECURE = True
