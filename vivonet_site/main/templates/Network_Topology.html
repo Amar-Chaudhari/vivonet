@@ -13,26 +13,6 @@
 
     <title>VIVoNET</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css"%}" rel="stylesheet">
-
-    <!-- MetisMenu CSS -->
-    <link href="{% static "bower_components/metisMenu/dist/metisMenu.min.css"%}" rel="stylesheet">
-
-    <!-- DataTables CSS -->
-    <link href="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css"%}"
-          rel="stylesheet">
-
-    <!-- DataTables Responsive CSS -->
-    <link href="{% static "bower_components/datatables-responsive/css/dataTables.responsive.css"%}" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="{% static "dist/css/sb-admin-2.css"%}" rel="stylesheet">
-
-    <!-- Custom Fonts -->
-    <link href="{% static "bower_components/font-awesome/css/font-awesome.min.css"%}" rel="stylesheet" type="text/css">
-
-
     <link href="{% static "bower_components/visjs/vis.css"%}" rel="stylesheet"/>
 
     <link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap.min.css"%}">
@@ -63,23 +43,6 @@
             border: 1px solid lightgray;
             background-color: #f8f8f8;
         }
-        /*#page-wrapper {*/
-            /*flex: 1;*/
-        /*}*/
-        body, html, #wrapper {
-            height: auto;
-        }
-        #page-wrapper {
-            /*display: flex;*/
-            height: auto;
-        }
-        /*body, #page-wrapper {*/
-            /*display: flex;*/
-        /*}*/
-        /*.row {*/
-            /*display: flex;*/
-            /*flex: 1;*/
-        /*}*/
     </style>
 </head>
 
@@ -88,18 +51,6 @@
 <!-- jQuery -->
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
-
-<!-- Metis Menu Plugin JavaScript -->
-<script src="{% static "bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
-
-<!-- DataTables JavaScript -->
-<script src="{% static "bower_components/datatables/media/js/jquery.dataTables.min.js" %}"></script>
-<script src="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js" %}"></script>
-
-<!-- Custom Theme JavaScript -->
-<script src="{% static "dist/js/sb-admin-2.js" %}"></script>
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 
@@ -113,7 +64,7 @@
 
 <!--Header-part-->
 <div id="header">
-  <h1><a href="dashboard.html">VIVoNET</a></h1>
+  <h1><a href="/">VIVoNET</a></h1>
 </div>
 <!--close-Header-part--> 
 
@@ -136,9 +87,9 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
   <ul>
-    <li><a href="index.html"><i class="icon icon-home"></i> <span>Home</span></a> </li>
+    <li><a href="/"><i class="icon icon-home"></i> <span>Home</span></a> </li>
     <li><a href="index.html"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
-    <li class="active"><a href="index.html"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
+    <li class="active"><a href="/topology"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
     <li><a href="index.html"><i class="icon icon-signal"></i> <span>Network Statistics</span></a> </li>
     <li><a href="charts.html"><i class="icon icon-signal"></i> <span></span></a> </li>
     <li><a href="charts.html"><i class="icon icon-signal"></i> <span>Charts &amp; graphs</span></a> </li>
@@ -177,18 +128,26 @@
 <!--sidebar-menu-->
 <div id="content">
   <div id="content-header">
-    <div id="breadcrumb"> <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="current">Network Topology</a> </div>
+    <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="/topology" class="current">Network Topology</a> </div>
     <h1>Network Topology</h1>
   </div>
   <div class="container-fluid">
     <hr>
     <div class="row-fluid">
-      <div class="span12">
+      <div class="span8">
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
             <h5>Visual Network</h5>
           </div>
          <div class="widget-content"><div id="mynetwork"></div></div>
+        </div>
+      </div>
+      <div class="span4">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
+            <h5>Details</h5>
+          </div>
+         <div class="widget-content"><pre id="eventSpan"></pre></div>
         </div>
       </div>
     </div>
@@ -222,10 +181,11 @@
     var restport = $.cookie('cport');
     if (restport == null || restport == "") window.location.href = "login.html";
 	*/
-	var ipaddress = '198.11.21.36'
-	var restport = '8080'
+	var ipaddress = '198.11.21.36';
+	var restport = '8080';
     var nodes = [];
     var edges = [];
+    var details = '';
     var network = null;
     var DIR = '/static/bower_components/visjs/img/refresh-cl/';
     var EDGE_LENGTH_MAIN = 50;
@@ -243,7 +203,9 @@
         var options = {
             autoResize: true,
             height: '100%',
-            width: '100%'
+            width: '100%',
+            nodes: {shadow:true},
+            edges: {shadow:true}
         };
         network = new vis.Network(container, data, options);
 //        network.fit({scale: 4.0});
@@ -253,6 +215,13 @@
                 network["body"]["nodes"][params]["options"]["title"] = parseFlows(id);
             }
         });
+        
+        network.on("click", function (params) {
+            params.event = "[original event]";
+            //details = fetchDetails(params)
+            document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+        });
+        
     }
     loadSwitches();
     function loadExternalLinks(hosts) { 														//Connect external links - Usually empty
@@ -265,6 +234,7 @@
                         from: "s" + data[i]["src-switch"],
                         to: "s" + data[i]["dst-switch"],
                         length: EDGE_LENGTH_MAIN,
+                        id: data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
                         title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
                         color: 'red',
                         width: 4
@@ -276,6 +246,7 @@
                             edges.push({
                                 from: "h" + hosts[i]["mac"]
                                 , to: "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
+                                id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 title: hosts[i]["trueAttachmentPoint"][0].switch + "/" + hosts[i]["trueAttachmentPoint"][0].port,
                                 color: 'green',
                                 width: 2
@@ -285,6 +256,7 @@
                             edges.push({
                                 from: "h" + hosts[i]["mac"]
                                 , to: "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
+                                id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 title: hosts[i]["attachmentPoint"][0].switch + "/" + hosts[i]["attachmentPoint"][0].port,
                                 color: 'green',
                                 width: 2
@@ -309,8 +281,9 @@
                 for (var i = 0; i < data.length; i++) {
                     edges.push({
                         from: "s" + data[i]["src-switch"], to: "s" + data[i]["dst-switch"], length: EDGE_LENGTH_MAIN,
+                        id: data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
                         title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
-                        color: 'yellow',
+                        color: 'black',
 						width: 3
                     });
                 }
@@ -396,6 +369,7 @@
             }
         });
     }
+    
 </script>
 
 </body>
