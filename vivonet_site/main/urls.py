@@ -5,7 +5,7 @@ from main.views import *
 
 
 urls_basics = [
-    url(r'^$', index_view, name='index'),
+    url(r'^$', index_view, name='index'), url('topology',network_topology, name='index'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

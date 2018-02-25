@@ -1,0 +1,403 @@
+{% load i18n %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VIVoNET</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static "bower_components/bootstrap/dist/css/bootstrap.min.css"%}" rel="stylesheet">
+
+    <!-- MetisMenu CSS -->
+    <link href="{% static "bower_components/metisMenu/dist/metisMenu.min.css"%}" rel="stylesheet">
+
+    <!-- DataTables CSS -->
+    <link href="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css"%}"
+          rel="stylesheet">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{% static "bower_components/datatables-responsive/css/dataTables.responsive.css"%}" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="{% static "dist/css/sb-admin-2.css"%}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{% static "bower_components/font-awesome/css/font-awesome.min.css"%}" rel="stylesheet" type="text/css">
+
+
+    <link href="{% static "bower_components/visjs/vis.css"%}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap.min.css"%}">
+    <!--><!-->
+    <link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap-responsive.min.css"%}">
+    <!--><!-->
+    <link rel="stylesheet" href="{% static "bower_components/html-components/css/fullcalendar.css"%}">
+    <!--><!-->
+    <link rel="stylesheet" href="{% static "bower_components/html-components/css/matrix-style.css" %}">
+    <!--><!-->
+    <link rel="stylesheet" href="{% static "bower_components/html-components/css/matrix-media.css" %}">
+    <!--><!-->
+    <link rel="stylesheet" href="{% static "bower_components/html-components/font-awesome/css/font-awesome.css"  %}">
+    <!--><!-->
+    <link rel="stylesheet" href="{% static "bower_components/html-components/css/jquery.gritter.css" %}">
+    <!--><!-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        #mynetwork {
+            flex: 1;
+            height: calc(100vh - 51px);
+            border: 1px solid lightgray;
+            background-color: #f8f8f8;
+        }
+        /*#page-wrapper {*/
+            /*flex: 1;*/
+        /*}*/
+        body, html, #wrapper {
+            height: auto;
+        }
+        #page-wrapper {
+            /*display: flex;*/
+            height: auto;
+        }
+        /*body, #page-wrapper {*/
+            /*display: flex;*/
+        /*}*/
+        /*.row {*/
+            /*display: flex;*/
+            /*flex: 1;*/
+        /*}*/
+    </style>
+</head>
+
+<body>
+
+<!-- jQuery -->
+<script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="{% static "bower_components/bootstrap/dist/js/bootstrap.min.js" %}"></script>
+
+<!-- Metis Menu Plugin JavaScript -->
+<script src="{% static "bower_components/metisMenu/dist/metisMenu.min.js" %}"></script>
+
+<!-- DataTables JavaScript -->
+<script src="{% static "bower_components/datatables/media/js/jquery.dataTables.min.js" %}"></script>
+<script src="{% static "bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js" %}"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="{% static "dist/js/sb-admin-2.js" %}"></script>
+
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+
+<script src="{% static "js/querystringparser.js" %}"></script>
+
+<script src="{% static "bower_components/visjs/vis.js" %}"></script>
+<script src="{% static "bower_components/visjs/googleAnalytics.js" %}"></script>
+
+<script src="{% static "js/jquery.cookie.js" %}"></script>
+
+
+<!--Header-part-->
+<div id="header">
+  <h1><a href="dashboard.html">VIVoNET</a></h1>
+</div>
+<!--close-Header-part--> 
+
+<!--top-Header-menu-->
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+  <ul class="nav">
+    <li  class="dropdown" id="profile-messages" ><a title="" href="#" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle"><i class="icon icon-user"></i>  <span class="text">Welcome User</span><b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li><a href="#"><i class="icon-user"></i> My Profile</a></li>
+        <li class="divider"></li>
+        <li><a href="login.html"><i class="icon-key"></i> Log Out</a></li>
+      </ul>
+    </li>
+    <li class=""><a title="" href="#"><i class="icon icon-cog"></i> <span class="text">Settings</span></a></li>
+    <li class=""><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
+  </ul>
+</div>
+<!--close-top-Header-menu-->
+<!--sidebar-menu-->
+<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
+  <ul>
+    <li><a href="index.html"><i class="icon icon-home"></i> <span>Home</span></a> </li>
+    <li><a href="index.html"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
+    <li class="active"><a href="index.html"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
+    <li><a href="index.html"><i class="icon icon-signal"></i> <span>Network Statistics</span></a> </li>
+    <li><a href="charts.html"><i class="icon icon-signal"></i> <span></span></a> </li>
+    <li><a href="charts.html"><i class="icon icon-signal"></i> <span>Charts &amp; graphs</span></a> </li>
+    <li><a href="widgets.html"><i class="icon icon-inbox"></i> <span>Widgets</span></a> </li>
+    <li><a href="tables.html"><i class="icon icon-th"></i> <span>Tables</span></a></li>
+    <li><a href="grid.html"><i class="icon icon-fullscreen"></i> <span>Full width</span></a></li>
+    <li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Forms</span> <span class="label label-important">3</span></a>
+      <ul>
+        <li><a href="form-common.html">Basic Form</a></li>
+        <li><a href="form-validation.html">Form with Validation</a></li>
+        <li><a href="form-wizard.html">Form with Wizard</a></li>
+      </ul>
+    </li>
+    <li><a href="buttons.html"><i class="icon icon-tint"></i> <span>Buttons &amp; icons</span></a></li>
+    <li><a href="interface.html"><i class="icon icon-pencil"></i> <span>Eelements</span></a></li>
+    <li class="submenu"> <a href="#"><i class="icon icon-file"></i> <span>Addons</span> <span class="label label-important">5</span></a>
+      <ul>
+        <li><a href="index2.html">Dashboard2</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="calendar.html">Calendar</a></li>
+        <li><a href="invoice.html">Invoice</a></li>
+        <li><a href="chat.html">Chat option</a></li>
+      </ul>
+    </li>
+    <li class="submenu"> <a href="#"><i class="icon icon-info-sign"></i> <span>Error</span> <span class="label label-important">4</span></a>
+      <ul>
+        <li><a href="error403.html">Error 403</a></li>
+        <li><a href="error404.html">Error 404</a></li>
+        <li><a href="error405.html">Error 405</a></li>
+        <li><a href="error500.html">Error 500</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<!--sidebar-menu-->
+<!--sidebar-menu-->
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="current">Network Topology</a> </div>
+    <h1>Network Topology</h1>
+  </div>
+  <div class="container-fluid">
+    <hr>
+    <div class="row-fluid">
+      <div class="span12">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
+            <h5>Visual Network</h5>
+          </div>
+         <div class="widget-content"><div id="mynetwork"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Footer-part-->
+<div class="row-fluid">
+  <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
+</div>
+<!--end-Footer-part-->
+<script src="js/jquery.min.js"></script> 
+<script src="js/jquery.ui.custom.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/matrix.js"></script>
+<!-- <div id="wrapper">
+    <div id="page-wrapper">
+            <div id="mynetwork"></div>
+    <div id="login-modal-include"></div>
+</div> -->
+
+
+
+<script type="text/javascript">
+    /*
+     * These cookies are set on the login page at login.html.
+     * They are simply the IP address of your controller and the REST api port.
+     * */
+	/* 
+    var ipaddress = $.cookie('cip');
+    if (ipaddress == null || ipaddress == "") window.location.href = "login.html";
+    var restport = $.cookie('cport');
+    if (restport == null || restport == "") window.location.href = "login.html";
+	*/
+	var ipaddress = '198.11.21.36'
+	var restport = '8080'
+    var nodes = [];
+    var edges = [];
+    var network = null;
+    var DIR = '/static/bower_components/visjs/img/refresh-cl/';
+    var EDGE_LENGTH_MAIN = 50;
+    var EDGE_LENGTH_SUB = 50;
+    /*
+    * This function draws the network and assigns actions to it as well.
+    **/
+    function draw() {
+        // create a network
+        var container = document.getElementById('mynetwork');
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {
+            autoResize: true,
+            height: '100%',
+            width: '100%'
+        };
+        network = new vis.Network(container, data, options);
+//        network.fit({scale: 4.0});
+        network.on("showPopup", function (params) {
+            if (params.charAt(0) == 's') {
+                var id = params.substring(1);
+                network["body"]["nodes"][params]["options"]["title"] = parseFlows(id);
+            }
+        });
+    }
+    loadSwitches();
+    function loadExternalLinks(hosts) { 														//Connect external links - Usually empty
+        var url = "http://" + ipaddress + ":" + restport + "/wm/topology/external-links/json";
+        $.ajax({
+            url: url,
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    edges.push({
+                        from: "s" + data[i]["src-switch"],
+                        to: "s" + data[i]["dst-switch"],
+                        length: EDGE_LENGTH_MAIN,
+                        title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
+                        color: 'red',
+                        width: 4
+                    });
+                }
+                for (var i = 0; i < hosts.length; i++) {
+                    if (hosts[i]["attachmentPoint"].length > 0) {
+                        if (hosts[i].hasOwnProperty("trueAttachmentPoint") && hosts[i]["trueAttachmentPoint"][0] != null) {
+                            edges.push({
+                                from: "h" + hosts[i]["mac"]
+                                , to: "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
+                                title: hosts[i]["trueAttachmentPoint"][0].switch + "/" + hosts[i]["trueAttachmentPoint"][0].port,
+                                color: 'green',
+                                width: 2
+                            });
+                        }
+                        else {
+                            edges.push({
+                                from: "h" + hosts[i]["mac"]
+                                , to: "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
+                                title: hosts[i]["attachmentPoint"][0].switch + "/" + hosts[i]["attachmentPoint"][0].port,
+                                color: 'green',
+                                width: 2
+                            });
+                        }
+                    }
+                }
+                loadInternalLinks();
+                //draw();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText);
+                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
+                        errorThrown);
+            }
+        });
+    }
+    function loadInternalLinks(hosts) {
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/topology/links/json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    edges.push({
+                        from: "s" + data[i]["src-switch"], to: "s" + data[i]["dst-switch"], length: EDGE_LENGTH_MAIN,
+                        title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
+                        color: 'yellow',
+						width: 3
+                    });
+                }
+                draw();
+                //LoadExternalLinks(hosts);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
+                        errorThrown);
+            }
+        });
+    }
+    function parseFlows(id) {
+        var flowString = "";	//Final Output Variable to be displayed on Hover
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/core/switch/" + id + "/flow/json",
+            async: false,		//Setting async to false means that the statement you are calling has to complete before the next statement in your function can be called. If you set async: true then that statement will begin it's execution and the next statement will be called regardless of whether the async statement has completed yet.
+            success: function (flowobject) {	//JSON Data fetched from URI
+                for (var i = 0; i < flowobject["flows"].length; i++) {
+                    flowString += "Flow " + i + ":";
+                    flowString += "<br>&nbsp;&nbsp;&nbsp;Packet count: " + JSON.stringify(flowobject["flows"][i]["packet_count"]); //&nbsp -> TAB/SPACE character - JSON.stringify - converts javascript value to string
+                    flowString += "<br>&nbsp;&nbsp;&nbsp;Matches: " + JSON.stringify(flowobject["flows"][i]["match"]);
+                    if (flowobject["flows"][i]["version"] == "OF_13") {
+                        flowString += "<br>&nbsp;&nbsp;&nbsp;Actions: " + JSON.stringify(flowobject["flows"][i]["instructions"]["instruction_apply_actions"]["actions"]);
+                    }
+                    if (flowobject["flows"][i]["version"] == "OF_10") {
+                        flowString += "<br>&nbsp;&nbsp;&nbsp;Actions: " + JSON.stringify(flowobject["flows"][i]["actions"]["actions"]);
+                    }
+                    flowString += "<br>";
+                }
+            }
+        });
+        return flowString;
+    }
+    function loadSwitches() {
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/core/controller/switches/json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var id = "s" + data[i]["switchDPID"];		//ID
+                    var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
+                    nodes.push({								//Push in Function Draw
+                        id: id,
+                        label: label,
+                        image: DIR + 'switch.png',				//Image as node - DIR mentioned above
+                        shape: 'image',
+                        title: parseFlows(data[i]["switchDPID"])//Hover Details - Calling parseFlows function - Input Switch DPID
+                    });
+                }
+                LoadHosts();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
+                        errorThrown);
+            }
+        });
+    }
+    function LoadHosts() {															//Extract Hosts for Nodes using /wm/device
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/device/",
+            success: function (hosts) {
+                hosts = hosts.devices;
+                console.log(hosts);
+                for (var i = 0; i < hosts.length; i++) {
+                    if (hosts[i]["attachmentPoint"].length > 0) {
+                        var id = "h" + hosts[i]["mac"];
+                        var label = "h" + hosts[i]["ipv4"];
+                        nodes.push({
+                            id: id,
+                            label: label,
+                            image: DIR + 'Hardware-My-Computer-3-icon.png',
+                            shape: 'image',
+                            title: hosts[i]["mac"]
+                        });
+                    }
+                }
+                loadExternalLinks(hosts);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText);
+                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
+                        errorThrown);
+            }
+        });
+    }
+</script>
+
+</body>
+
+</html>
