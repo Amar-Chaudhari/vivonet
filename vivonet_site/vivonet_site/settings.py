@@ -22,7 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'zlb-h0mykw!cgaad)gkm)-n21%(hegu&47yrweop4k=uscpim5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -30,8 +29,8 @@ hostname = socket.gethostname()
 if "front-server" in hostname:
     DEBUG = False
     #PREPEND_WWW = True
-    USE_X_FORWARDED_HOST = True
-    CSRF_COOKIE_SECURE = True
+    #USE_X_FORWARDED_HOST = True
+    #CSRF_COOKIE_SECURE = True
     #SESSION_COOKIE_SECURE = True
     #CSRF_COOKIE_DOMAIN = '.serverbundle.com'
     #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
@@ -53,8 +52,6 @@ if "front-server" in hostname:
 else:
     DEBUG = True
     LOG_FILE = BASE_DIR + "/vivonet_site.log"
-    CSRF_COOKIE_SECURE = False
-
     # Database
     # if code is running on the local machine, we use sqlite
     DATABASES = {
@@ -76,7 +73,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'django_alexa',
-    'intents'
+    'intents',
 ]
 
 MIDDLEWARE = [
@@ -203,7 +200,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
