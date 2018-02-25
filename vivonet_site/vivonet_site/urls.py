@@ -16,9 +16,12 @@ Including another URLconf
 from django.conf.urls import url,include
 from django.contrib import admin
 from main import urls as main_urls
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('django_alexa.urls')),
     url('', include(main_urls, namespace='main_urls')),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
