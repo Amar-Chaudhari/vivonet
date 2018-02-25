@@ -37,6 +37,29 @@ Username: admin
 Password: Super123
 ```
 
+## Deploy on Server
+
+**ssh to controller:**
+```
+ssh -l root 198.11.21.36 -p 10000
+```
+**ssh to web server**
+```
+ssh 10.0.1.40
+```
+**Download latest code and deploy**
+```
+source /opt/virtualenv/vivo_env/bin/activate
+cd /opt/projects/vivonet/
+git pull
+rm -rf /opt/webapp/vivonet_site/
+cp -rf vivonet_site /opt/webapp/
+cd /opt/webapp/vivonet_site/
+python manage.py collectstatic
+systemctl restart gunicorn
+systemctl restart nginx
+```
+
 ## Installations (Other)
 
 ### Create Loopback Interfaces CentOS ###
