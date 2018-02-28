@@ -5,23 +5,11 @@ from django.dispatch import receiver
 
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    location = models.CharField(max_length=60)
     Prefix = models.CharField(max_length=60)
 
     def __str__(self):
-        return "{0} {1}".format(self.user, self.Prefix)
-
-
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        Customer.objects.create(user=instance)
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.customer.save()
-
+        return "{0} {1}".format(self.location, self.Prefix)
 
 LEAST_LATENCY = 'LEAST_LATENCY'
 BANDWIDTH = 'BANDWIDTH'
@@ -38,7 +26,7 @@ class Intent_Data(models.Model):
     Intent_Type = models.CharField(max_length=60, choices=INTENT_CHOICES, default=None)
     Source_IP = models.CharField(max_length=60)
     Destination_IP = models.CharField(max_length=60)
-    Path = models.CharField(max_length=60)
+    Path = models.CharField(max_length=500)
     timestamp = models.DateTimeField()
 
     def __str__(self):
