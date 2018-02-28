@@ -12,7 +12,12 @@ def LaunchRequest(session):
                                            end_session=True)
 
 @intent(app='intents')
-def CreateNetwork(session,from_city,to_city):
-    speech_text = '<speak>Vivonet will setup a 100 milli second path from {0} to {1}</speak>'.format(from_city,to_city)
-    reprompt_text = '<speak>What path do you want to setupt? You can say from Denver to SF</speak>'
-    return ResponseBuilder.create_response(message=speech_text,message_is_ssml=True)
+def CreateIntent(session,intent_type,from_city,to_city):
+    print(session)
+    if to_city:
+        speech_text = 'Vivonet will setup a {0} path from {1} to {2}'.format(intent_type,from_city,to_city)
+    else:
+        speech_text = "Vivonet needs the destination location to setup the path"
+        reprompt_text = 'What path do you want to setup? You can say from Denver to SF'
+        return ResponseBuilder.create_response(speech_text=speech_text,message_is_ssml=True,end_session=True,reprompt_text=reprompt_text)
+    return ResponseBuilder.create_response(message=speech_text,message_is_ssml=True,end_session=True)
