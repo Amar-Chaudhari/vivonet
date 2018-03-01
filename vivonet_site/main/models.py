@@ -7,6 +7,7 @@ from django.dispatch import receiver
 class Customer(models.Model):
     location = models.CharField(max_length=60)
     Prefix = models.CharField(max_length=60)
+    Connected_Host = models.CharField(max_length=60,default="20.0.0.1")
 
     def __str__(self):
         return "{0} {1}".format(self.location, self.Prefix)
