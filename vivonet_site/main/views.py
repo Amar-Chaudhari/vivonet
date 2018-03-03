@@ -4,6 +4,9 @@ from __future__ import unicode_literals
 from django.shortcuts import render, HttpResponse
 
 from main.models import *
+
+from intents.intent_engine import *
+
 # Create your views here.
 def index_view(request):
     return render(request, 'index.html')
@@ -12,5 +15,6 @@ def network_topology(request):
     return render(request, 'Network_Topology.html')
 
 def testdb(request):
-    db = Customer.objects.get(location = 'SF')
+    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least latency')
+    db = c.create_flows()
     return HttpResponse(db)
