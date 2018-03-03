@@ -1,15 +1,14 @@
 import httplib
 import json
 
+from main.models import *
 
 class ComputeAndPush(object):
-    def __init__(self, server, srcdpid, dstdpid, intent, srcip, dstip):
+    def __init__(self, server, srcname, dstname, intent):
         self.server = server
-        self.srcdpid = srcdpid
-        self.dstdpid = dstdpid
+        self.srcname = srcname
+        self.dstname = dstname
         self.intent = intent
-        self.srcip = srcip
-        self.dstip = dstip
 
     def get(self, data):
         ret = self.rest_call({}, 'GET')
@@ -39,26 +38,41 @@ class ComputeAndPush(object):
     def get_endpoints(self):
         """ To get dpid, endport and ip address of PE router"""
 
+        src_switch = None
+        dst_switch = None
         path = '/wm/device/'
         endpoints = []  # List to store endpoint information
         ret = self.rest_call({}, 'GET', path)
         output = json.loads(ret[2])  # Since path is not json, this string needs to be converted to json.
         devices = output['devices']  # Single key in dict output which contains a list of endpoints
+        src_host = Customer.objects.get(location=self.srcname).Connected_Host
+        dst_host = Customer.objects.get(location=self.dstname).Connected_Host
         for i in xrange(0, len(devices)):
-            endswitch = output['devices'][i]['attachmentPoint'][0]['switch']
-            endport = output['devices'][i]['attachmentPoint'][0]['port']
             ip = output['devices'][i]['ipv4'][0]
+            if ip == src_host:
+                src_switch = output['devices'][i]['attachmentPoint'][0]['switch']
+            elif ip == dst_host:
+                dst_switch = output['devices'][i]['attachmentPoint'][0]['switch']
+            endport = output['devices'][i]['attachmentPoint'][0]['port']
             endpoints.append({
-                'endswitch': endswitch,
+                'src_switch': src_switch,
+                'dst_switch': dst_switch,
                 'endport': endport,
                 'ip': ip,
             })
+        print endpoints
         return endpoints
 
     def find_path(self):
         """To find path as per the required intent"""
 
-        path = '/wm/routing/paths/fast/{}/{}/2/json'.format(self.srcdpid, self.dstdpid)
+        endpoints = self.get_endpoints()
+        for endpoint in endpoints:
+            if endpoint['src_switch'] is not None:
+                srcdpid = endpoint['src_switch']
+            if endpoint['dst_switch'] is not None:
+                dstdpid = endpoint['dst_switch']
+        path = '/wm/routing/paths/fast/{}/{}/2/json'.format(srcdpid, dstdpid)
         ret = self.rest_call({}, 'GET', path)
         output = json.loads(ret[2])
         lat1 = output['results'][0]['latency']
@@ -78,7 +92,7 @@ class ComputeAndPush(object):
         return path
 
     def construct_flows(self):
-        """To construct flow from various data in the required path"""
+        """To construct flows from various data in the required path"""
 
         flows = []
         path = self.find_path()
@@ -87,9 +101,9 @@ class ComputeAndPush(object):
 
         endpoints = self.get_endpoints()  # Find outgoing ports for endpoints and enter in flow dict
         for endpoint in endpoints:
-            if endpoint['endswitch'] == self.srcdpid:
+            if endpoint['src_switch'] is not None:
                 in_hop['in_port'] = endpoint['endport']
-            if endpoint['endswitch'] == self.dstdpid:
+            if endpoint['dst_switch'] is not None:
                 out_hop['actions'] = 'output=' + endpoint['endport']
 
         in_hop['actions'] = 'output=' + in_hop.pop('port')
@@ -110,6 +124,8 @@ class ComputeAndPush(object):
     def create_flows(self):
         """Create final flows"""
 
+        src_prefix = Customer.objects.get(location=self.srcname).Prefix
+        dst_prefix = Customer.objects.get(location=self.dstname).Prefix
         flows = self.construct_flows()
         # Add additional fields in the flow
         req_fields = {
@@ -117,8 +133,8 @@ class ComputeAndPush(object):
             'cookie': None,
             'priority': 32768,
             'active': 'true',
-            'src-ip': self.srcip,  # TODO: Extract from database
-            'dst-ip': self.dstip,  # TODO: Extract from database
+            'src-ip': src_prefix,
+            'dst-ip': dst_prefix,
         }
         for switch in flows:
             switch.update(req_fields)
@@ -135,6 +151,5 @@ class ComputeAndPush(object):
 
 
 if __name__ == '__main__':
-    c = ComputeAndPush('198.11.21.36', '00:00:00:0c:29:70:d6:02', '00:00:00:0c:29:0d:e7:4c', 'least latency',
-                       '192.168.1.0/24', '192.168.2.0/24')
+    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least latency')
     c.create_flows()
