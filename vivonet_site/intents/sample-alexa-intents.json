@@ -1,0 +1,85 @@
+{
+  "languageModel": {
+    "types": [
+      {
+        "name": "intent_type",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "least latency",
+              "synonyms": [
+                "100ms latency",
+                "low latency",
+                "latency"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "high bandwidth",
+              "synonyms": [
+                "bandwidth"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": [
+          "vivonet help"
+        ]
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.YesIntent",
+        "samples": []
+      },
+      {
+        "name": "CreateIntent",
+        "samples": [
+          "vivonet setup a {intent_type} path from {from_city} to {to_city}",
+          "setup a {intent_type} path from {from_city} to {to_city}",
+          "create a {intent_type} path from {from_city} to {to_city}",
+          "{intent_type}",
+          "{from_city} to {to_city}"
+        ],
+        "slots": [
+          {
+            "name": "intent_type",
+            "type": "intent_type"
+          },
+          {
+            "name": "from_city",
+            "type": "AMAZON.US_CITY"
+          },
+          {
+            "name": "to_city",
+            "type": "AMAZON.US_CITY"
+          }
+        ]
+      },
+      {
+        "name": "LaunchRequest",
+        "samples": [
+          "launch vivonet",
+          "launch",
+          "start"
+        ],
+        "slots": []
+      }
+    ],
+    "invocationName": "vivonet"
+  }
+}
