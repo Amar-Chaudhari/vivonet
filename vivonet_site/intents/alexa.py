@@ -56,14 +56,11 @@ def CreateIntent(session, intent_type, from_city, to_city):
     vivonet setup a {intent_type} path from {from_city} to {to_city}
     """
     kwargs = {}
-    print session
     kwargs['launched'] = launched = session.get('attributes').get('launched')
     kwargs['to_city'] = to_city = to_city or session.get('attributes').get('to_city')
     kwargs['from_city'] = from_city = from_city or session.get('attributes').get('from_city')
     kwargs['intent_type'] = intent_type = intent_type or session.get('attributes').get('intent_type')
-    logging.info(intent_type)
-    logging.info(to_city)
-    logging.info(from_city)
+    logging.info(session)
     if intent_type is None:
         kwargs['message'] = "Which intent would you like to setup? You can say least latency, bandwidth or hopcount"
         kwargs['end_session'] = False
