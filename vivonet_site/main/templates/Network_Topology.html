@@ -54,12 +54,12 @@
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 
-<script src="{% static "js/querystringparser.js" %}"></script>
+<script src="{% static "bower_components/js/querystringparser.js" %}"></script>
 
 <script src="{% static "bower_components/visjs/vis.js" %}"></script>
 <script src="{% static "bower_components/visjs/googleAnalytics.js" %}"></script>
 
-<script src="{% static "js/jquery.cookie.js" %}"></script>
+<script src="{% static "bower_components/js/jquery.cookie.js" %}"></script>
 
 
 <!--Header-part-->
@@ -143,6 +143,16 @@
         </div>
       </div>
       <div class="span4">
+	  
+        <div class="widget-box collapsible">
+          <div class="widget-title"> <a href="#collapseOne" data-toggle="collapse"> <span class="icon"><i class="icon-arrow-right"></i></span>
+            <h5>Configured Intents</h5>
+            </a> </div>
+          <div class="collapse" id="collapseOne">
+            <div class="widget-content">There are no intents configured</div>
+          </div>
+        </div>
+	  
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
             <h5>Details</h5>
@@ -158,15 +168,12 @@
   <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
 </div>
 <!--end-Footer-part-->
-<script src="js/jquery.min.js"></script> 
-<script src="js/jquery.ui.custom.js"></script> 
-<script src="js/bootstrap.min.js"></script> 
-<script src="js/matrix.js"></script>
-<!-- <div id="wrapper">
-    <div id="page-wrapper">
-            <div id="mynetwork"></div>
-    <div id="login-modal-include"></div>
-</div> -->
+
+<script src="{% static "bower_components/html-components/js/jquery.min.js" %}"></script> 
+<script src="{% static "bower_components/html-components/js/jquery.ui.custom.js" %}"></script> 
+<script src="{% static "bower_components/html-components/js/bootstrap.min.js" %}"></script> 
+<script src="{% static "bower_components/html-components/js/matrix.js" %}"></script>
+
 
 
 
@@ -230,7 +237,7 @@
         var nodeId = nodeId
         var options = {
         // position: {x:positionx,y:positiony}, // this is not relevant when focusing on nodes
-            scale: 1.2,
+            scale: 1,
             animation: {
                 duration: 1000,
                 easingFunction: "easeOutQuad"
@@ -370,7 +377,7 @@
                         nodes.push({
                             id: id,
                             label: label,
-                            image: DIR + 'Hardware-My-Computer-3-icon.png',
+                            image: DIR + 'cloud.png',
                             shape: 'image',
                             title: hosts[i]["mac"]
                         });
