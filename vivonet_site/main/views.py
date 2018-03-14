@@ -40,11 +40,10 @@ def dropdown_data(request):
         },
     }
     """
-    data = {}
+    data = []
     try:
         if request.method == 'GET':
             intents_all = Intent_Data.objects.all()
-            i = 1
             for intent in intents_all:
                 source = Customer.objects.filter(Prefix=intent.Source_IP).values_list('location', flat=True)[0]
                 destination = Customer.objects.filter(Prefix=intent.Destination_IP).values_list('location', flat=True)[
@@ -53,8 +52,7 @@ def dropdown_data(request):
                 temp = {}
                 temp['name'] = "{0} to {1} - {2}".format(source, destination, intent_type)
                 temp['path'] = intent.Path
-                data[i] = temp
-                i += 1
+                data.append(temp)
             return Response(data)
     except:
         return Response(data)
