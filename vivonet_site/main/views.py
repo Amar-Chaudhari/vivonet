@@ -18,10 +18,9 @@ def network_topology(request):
     return render(request, 'Network_Topology.html')
 
 def testdb(request):
-    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least latency')
-    db = c.create_flows()
+    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_hop_count')
+    db = c.intentEngine()
     return HttpResponse(db)
-
 
 @api_view(['GET'])
 def dropdown_data(request):
