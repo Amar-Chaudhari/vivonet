@@ -10,6 +10,7 @@ from intents.intent_engine import *
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 # Create your views here.
 def index_view(request):
@@ -25,6 +26,7 @@ def testdb(request):
     db = c.intentEngine()
     return HttpResponse(db)
 
+@csrf_exempt
 @api_view(['GET'])
 def dropdown_data(request):
     """
