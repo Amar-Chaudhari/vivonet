@@ -55,6 +55,6 @@ def dropdown_data(request):
                 temp['path'] = intent.Path
                 data[i] = temp
                 i += 1
-            return Response(json.dumps(data))
+            return Response(data)
     except:
-        return Response(json.dumps(data))
+        return Response(data)
