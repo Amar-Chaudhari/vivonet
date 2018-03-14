@@ -17,6 +17,7 @@ from django.conf.urls import url,include
 from django.contrib import admin
 from main import urls as main_urls
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
