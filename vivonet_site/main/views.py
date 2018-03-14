@@ -7,6 +7,7 @@ from main.models import *
 
 from intents.intent_engine import *
 
+
 # Create your views here.
 def index_view(request):
     return render(request, 'index.html')
