@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'main',
     'django_alexa',
     'intents',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
