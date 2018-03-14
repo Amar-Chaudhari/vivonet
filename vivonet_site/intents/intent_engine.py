@@ -186,11 +186,12 @@ class ComputeAndPush(object):
     def add_intent_path_data(self):
         """Add actual intent path to database"""
 
-        dpids = self.add_intent_data()
-        if dpids is not False:
-            path = Intent_Data.objects.get(Path=dpids)
+        dpids_list = self.add_intent_data()
+        if dpids_list is not False:
+            path = Intent_Data.objects.get(Path=dpids_list)
             intent = path.Intent_Type
 
+            dpids = dpids_list.split('-')
             for switch in dpids:
                 call = '/wm/staticflowpusher/list/{}/json'.format(switch)
                 ret = self.rest_call({}, 'GET', call)
