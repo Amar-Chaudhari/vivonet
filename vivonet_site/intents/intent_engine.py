@@ -73,7 +73,7 @@ class ComputeAndPush(object):
         for endpoint in endpoints:
             if endpoint['src_switch'] is not None:
                 srcdpid = endpoint['src_switch']
-            if endpoint['dst_switch'] is not None:
+            elif endpoint['dst_switch'] is not None:
                 dstdpid = endpoint['dst_switch']
         path = '/wm/routing/paths/fast/{}/{}/2/json'.format(srcdpid, dstdpid)
         ret = self.rest_call({}, 'GET', path)

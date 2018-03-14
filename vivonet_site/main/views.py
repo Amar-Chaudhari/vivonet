@@ -6,23 +6,33 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from main.models import *
-
 from intents.intent_engine import *
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 # Create your views here.
 def index_view(request):
     return render(request, 'index.html')
 
+
 def network_topology(request):
     return render(request, 'Network_Topology.html')
 
+
 def testdb(request):
+<<<<<<< HEAD
 <<<<<<< HEAD
     c = ComputeAndPush('10.0.1.200', 'DEN', 'SFO', 'least_latency')
     db = c.intentEngine()
     return HttpResponse(db)
 =======
+=======
+    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_hop_count')
+    db = c.intentEngine()
+    return HttpResponse(db)
+
+>>>>>>> 9de247b73bf824aaebd0a19764edc7156d521d1e
 @api_view(['GET'])
 def dropdown_data(request):
     """
@@ -52,7 +62,11 @@ def dropdown_data(request):
                 temp['path'] = intent.Path
                 data[i] = temp
                 i += 1
-            return Response(data)
+            return HttpResponse(data)
     except:
+<<<<<<< HEAD
         return Response(data)
 >>>>>>> f7e8df6b245059931f3a06e9ce672d4489722cdc
+=======
+        return HttpResponse(data)
+>>>>>>> 9de247b73bf824aaebd0a19764edc7156d521d1e
