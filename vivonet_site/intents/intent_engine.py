@@ -179,7 +179,7 @@ class ComputeAndPush(object):
                                             Destination_IP=dst_prefix,
                                             Path=dpid_list,
                                             timestamp=datetime.now())
-            return dpid
+            return dpid_list
         else:
             return False
 
