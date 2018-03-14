@@ -39,7 +39,7 @@
     <style type="text/css">
         #mynetwork {
             flex: 1;
-            height: calc(100vh - 51px);
+            height: 550px;
             border: 1px solid lightgray;
             background-color: #f8f8f8;
         }
@@ -54,12 +54,12 @@
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 
-<script src="{% static "js/querystringparser.js" %}"></script>
+<script src="{% static "bower_components/js/querystringparser.js" %}"></script>
 
 <script src="{% static "bower_components/visjs/vis.js" %}"></script>
 <script src="{% static "bower_components/visjs/googleAnalytics.js" %}"></script>
 
-<script src="{% static "js/jquery.cookie.js" %}"></script>
+<script src="{% static "bower_components/js/jquery.cookie.js" %}"></script>
 
 
 <!--Header-part-->
@@ -91,37 +91,6 @@
     <li><a href="index.html"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
     <li class="active"><a href="/topology"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
     <li><a href="index.html"><i class="icon icon-signal"></i> <span>Network Statistics</span></a> </li>
-    <li><a href="charts.html"><i class="icon icon-signal"></i> <span></span></a> </li>
-    <li><a href="charts.html"><i class="icon icon-signal"></i> <span>Charts &amp; graphs</span></a> </li>
-    <li><a href="widgets.html"><i class="icon icon-inbox"></i> <span>Widgets</span></a> </li>
-    <li><a href="tables.html"><i class="icon icon-th"></i> <span>Tables</span></a></li>
-    <li><a href="grid.html"><i class="icon icon-fullscreen"></i> <span>Full width</span></a></li>
-    <li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Forms</span> <span class="label label-important">3</span></a>
-      <ul>
-        <li><a href="form-common.html">Basic Form</a></li>
-        <li><a href="form-validation.html">Form with Validation</a></li>
-        <li><a href="form-wizard.html">Form with Wizard</a></li>
-      </ul>
-    </li>
-    <li><a href="buttons.html"><i class="icon icon-tint"></i> <span>Buttons &amp; icons</span></a></li>
-    <li><a href="interface.html"><i class="icon icon-pencil"></i> <span>Eelements</span></a></li>
-    <li class="submenu"> <a href="#"><i class="icon icon-file"></i> <span>Addons</span> <span class="label label-important">5</span></a>
-      <ul>
-        <li><a href="index2.html">Dashboard2</a></li>
-        <li><a href="gallery.html">Gallery</a></li>
-        <li><a href="calendar.html">Calendar</a></li>
-        <li><a href="invoice.html">Invoice</a></li>
-        <li><a href="chat.html">Chat option</a></li>
-      </ul>
-    </li>
-    <li class="submenu"> <a href="#"><i class="icon icon-info-sign"></i> <span>Error</span> <span class="label label-important">4</span></a>
-      <ul>
-        <li><a href="error403.html">Error 403</a></li>
-        <li><a href="error404.html">Error 404</a></li>
-        <li><a href="error405.html">Error 405</a></li>
-        <li><a href="error500.html">Error 500</a></li>
-      </ul>
-    </li>
   </ul>
 </div>
 <!--sidebar-menu-->
@@ -129,20 +98,30 @@
 <div id="content">
   <div id="content-header">
     <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="/topology" class="current">Network Topology</a> </div>
-    <h1>Network Topology</h1>
   </div>
   <div class="container-fluid">
-    <hr>
-    <div class="row-fluid">
+  
       <div class="span8">
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
-            <h5>Visual Network</h5>
+            <h5>Visual Network Topology</h5>
           </div>
          <div class="widget-content"><div id="mynetwork"></div></div>
         </div>
       </div>
+	  
       <div class="span4">
+        <div class="widget-box collapsible">
+          <div class="widget-title"> <a href="#collapseOne" onclick = "fetchIntents()" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
+            <h5>Configured Intents</h5>
+            </a> </div>
+          <div class="collapse" id="collapseOne">
+		  	<div class='widget-content'>
+			<ul id="intent_list" class="activity-list">
+            </ul>
+			</div>
+          </div>
+        </div>
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
             <h5>Details</h5>
@@ -150,7 +129,7 @@
          <div class="widget-content"><pre id="eventSpan"></pre></div>
         </div>
       </div>
-    </div>
+	  
   </div>
 </div>
 <!--Footer-part-->
@@ -158,15 +137,12 @@
   <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
 </div>
 <!--end-Footer-part-->
-<script src="js/jquery.min.js"></script> 
-<script src="js/jquery.ui.custom.js"></script> 
-<script src="js/bootstrap.min.js"></script> 
-<script src="js/matrix.js"></script>
-<!-- <div id="wrapper">
-    <div id="page-wrapper">
-            <div id="mynetwork"></div>
-    <div id="login-modal-include"></div>
-</div> -->
+
+<script src="{% static "bower_components/html-components/js/jquery.min.js" %}"></script> 
+<script src="{% static "bower_components/html-components/js/jquery.ui.custom.js" %}"></script> 
+<script src="{% static "bower_components/html-components/js/bootstrap.min.js" %}"></script> 
+<script src="{% static "bower_components/html-components/js/matrix.js" %}"></script>
+
 
 
 
@@ -182,14 +158,18 @@
     if (restport == null || restport == "") window.location.href = "login.html";
 	*/
 	var ipaddress = '198.11.21.36';
+	var dbaddress = '198.11.21.37';
+	var dbport = '80';
 	var restport = '8080';
-    var nodes = [];
-    var edges = [];
+    var nodes, edges;
     var details = '';
     var network = null;
     var DIR = '/static/bower_components/visjs/img/refresh-cl/';
     var EDGE_LENGTH_MAIN = 50;
     var EDGE_LENGTH_SUB = 50;
+	nodes = new vis.DataSet();
+	edges = new vis.DataSet();
+
     /*
     * This function draws the network and assigns actions to it as well.
     **/
@@ -230,7 +210,7 @@
         var nodeId = nodeId
         var options = {
         // position: {x:positionx,y:positiony}, // this is not relevant when focusing on nodes
-            scale: 1.2,
+            scale: 1,
             animation: {
                 duration: 1000,
                 easingFunction: "easeOutQuad"
@@ -239,14 +219,14 @@
       network.focus(nodeId, options);
     }
     
-    loadSwitches();
+    //loadSwitches();
     function loadExternalLinks(hosts) { 														//Connect external links - Usually empty
         var url = "http://" + ipaddress + ":" + restport + "/wm/topology/external-links/json";
         $.ajax({
             url: url,
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    edges.push({
+                    edges.add({
                         from: "s" + data[i]["src-switch"],
                         to: "s" + data[i]["dst-switch"],
                         length: EDGE_LENGTH_MAIN,
@@ -259,7 +239,7 @@
                 for (var i = 0; i < hosts.length; i++) {
                     if (hosts[i]["attachmentPoint"].length > 0) {
                         if (hosts[i].hasOwnProperty("trueAttachmentPoint") && hosts[i]["trueAttachmentPoint"][0] != null) {
-                            edges.push({
+                            edges.add({
                                 from: "h" + hosts[i]["mac"]
                                 , to: "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
@@ -269,7 +249,7 @@
                             });
                         }
                         else {
-                            edges.push({
+                            edges.add({
                                 from: "h" + hosts[i]["mac"]
                                 , to: "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
@@ -295,10 +275,11 @@
             url: "http://" + ipaddress + ":" + restport + "/wm/topology/links/json",
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
-                    edges.push({
+                    edges.add({
                         from: "s" + data[i]["src-switch"], to: "s" + data[i]["dst-switch"], length: EDGE_LENGTH_MAIN,
-                        id: data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
+                        id: "s" + data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + "s" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
                         title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
+						
                         color: 'black',
 						width: 3
                     });
@@ -312,6 +293,64 @@
             }
         });
     }
+	function updateEdges(){
+		edges.update({
+		id:"s00:00:00:0c:29:0d:e7:4c/1-s00:00:00:0c:29:8b:2b:ad/2",
+		color: 'red'
+		});
+		draw();
+	}
+
+	function fetchIntents(){
+		$.ajax({
+            url: "http://" + dbaddress + ":" + dbport + "/api/dropdown_data",
+            success: function (intents) {
+				$(document).ready(function(){
+					
+					$(".intent_name").remove();
+				});
+				if (intents.length != 0){
+					console.log("fetch")
+					for (var i = 0; i < intents.length; i++) {
+						
+						intent_name = intents[i]["name"];
+						intent_path = intents[i]["path"];
+
+						$(document).ready(function(){
+							
+							$("#intent_list").append("<li class='intent_name'><a href='#' onclick = 'updateEdges()'> <i class='icon-user'></i>"+intent_name+"</a></li>");
+						});
+						
+						
+						path_arr = intent_path.split("-");
+						
+						
+					}
+				} else {
+				
+						$(document).ready(function(){
+							$("#intent_list").append("<div class='widget-content'>There are no intents configured</div>");
+						});	
+				}
+			
+			}
+		})
+		
+	}
+	
+	function resetEdges(){
+		
+		edgeIDs = edges.getIds();
+		for (var i = 0; i < edgeIDs.length; i++) {
+			edges.update({
+			id: edgeIDs[i],
+			color: 'black'
+			});
+			draw();
+		}
+	}
+	
+
     function parseFlows(id) {
         var flowString = "";	//Final Output Variable to be displayed on Hover
         $.ajax({
@@ -341,7 +380,7 @@
                 for (var i = 0; i < data.length; i++) {
                     var id = "s" + data[i]["switchDPID"];		//ID
                     var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
-                    nodes.push({								//Push in Function Draw
+                    nodes.add({								//Push in Function Draw
                         id: id,
                         label: label,
                         image: DIR + 'switch.png',				//Image as node - DIR mentioned above
@@ -367,10 +406,10 @@
                     if (hosts[i]["attachmentPoint"].length > 0) {
                         var id = "h" + hosts[i]["mac"];
                         var label = "h" + hosts[i]["ipv4"];
-                        nodes.push({
+                        nodes.add({
                             id: id,
                             label: label,
-                            image: DIR + 'Hardware-My-Computer-3-icon.png',
+                            image: DIR + 'cloud.png',
                             shape: 'image',
                             title: hosts[i]["mac"]
                         });

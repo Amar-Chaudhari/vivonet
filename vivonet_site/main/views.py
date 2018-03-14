@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
+
 # Create your views here.
 def index_view(request):
     return render(request, 'index.html')
