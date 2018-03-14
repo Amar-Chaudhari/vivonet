@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'django_alexa',
     'intents',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -86,6 +87,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'vivonet_site.urls'
 
