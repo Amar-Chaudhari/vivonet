@@ -2,6 +2,9 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, HttpResponse
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from intents.intent_engine import *
 from rest_framework import status
@@ -18,7 +21,7 @@ def network_topology(request):
 
 
 def testdb(request):
-    c = ComputeAndPush('10.0.1.200', 'DEN', 'SFO', 'least_latency')
+    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_hop_count')
     db = c.intentEngine()
     return HttpResponse(db)
 
