@@ -1,0 +1,136 @@
+{
+  "languageModel": {
+    "types": [
+      {
+        "name": "intent_type",
+        "values": [
+          {
+            "id": null,
+            "name": {
+              "value": "low latency",
+              "synonyms": [
+                "100ms latency",
+                "low latency",
+                "latency"
+              ]
+            }
+          },
+          {
+            "id": null,
+            "name": {
+              "value": "high bandwidth",
+              "synonyms": [
+                "bandwidth"
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "intents": [
+      {
+        "name": "AMAZON.CancelIntent",
+        "samples": []
+      },
+      {
+        "name": "AMAZON.HelpIntent",
+        "samples": [
+          "vivonet help"
+        ]
+      },
+      {
+        "name": "AMAZON.StopIntent",
+        "samples": []
+      },
+      {
+        "name": "CreateIntent",
+        "samples": [
+          "vivonet setup a {intent_type} path from {from_city} to {to_city}",
+          "setup a {intent_type} path from {from_city} to {to_city}",
+          "create a {intent_type} path from {from_city} to {to_city}"
+        ],
+        "slots": [
+          {
+            "name": "intent_type",
+            "type": "intent_type"
+          },
+          {
+            "name": "from_city",
+            "type": "AMAZON.US_CITY",
+            "samples": [
+              "Denver",
+              "SF",
+              "new york"
+            ]
+          },
+          {
+            "name": "to_city",
+            "type": "AMAZON.US_CITY",
+            "samples": [
+              "Denver",
+              "SF",
+              "new york"
+            ]
+          }
+        ]
+      }
+    ],
+    "invocationName": "vivonet"
+  },
+  "prompts": [
+    {
+      "id": "Elicit.Intent-CreateIntent.IntentSlot-from_city",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "From which city do you want to path to start"
+        }
+      ]
+    },
+    {
+      "id": "Elicit.Intent-CreateIntent.IntentSlot-to_city",
+      "variations": [
+        {
+          "type": "PlainText",
+          "value": "Till which city do you want the path"
+        }
+      ]
+    }
+  ],
+  "dialog": {
+    "intents": [
+      {
+        "name": "CreateIntent",
+        "confirmationRequired": false,
+        "prompts": {},
+        "slots": [
+          {
+            "name": "intent_type",
+            "type": "intent_type",
+            "elicitationRequired": false,
+            "confirmationRequired": false,
+            "prompts": {}
+          },
+          {
+            "name": "from_city",
+            "type": "AMAZON.US_CITY",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-CreateIntent.IntentSlot-from_city"
+            }
+          },
+          {
+            "name": "to_city",
+            "type": "AMAZON.US_CITY",
+            "elicitationRequired": true,
+            "confirmationRequired": false,
+            "prompts": {
+              "elicitation": "Elicit.Intent-CreateIntent.IntentSlot-to_city"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
