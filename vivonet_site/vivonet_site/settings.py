@@ -27,13 +27,13 @@ ALLOWED_HOSTS = ['*']
 
 hostname = socket.gethostname()
 if "front-server" in hostname:
-    DEBUG = False
+    DEBUG = True
     #PREPEND_WWW = True
-    USE_X_FORWARDED_HOST = True
-    CSRF_COOKIE_SECURE = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_DOMAIN = '.vivonet.tk'
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+    #USE_X_FORWARDED_HOST = True
+    #CSRF_COOKIE_SECURE = True
+    #SESSION_COOKIE_SECURE = True
+    #CSRF_COOKIE_DOMAIN = '.vivonet.tk'
+    #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
     LOG_FILE = "/var/log/django_logs/vivonet_site.log"
 
     # Database
