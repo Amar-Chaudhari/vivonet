@@ -27,7 +27,6 @@ def testdb(request):
     db = c.intentEngine()
     return HttpResponse(db)
 
-@csrf_exempt
 @api_view(['GET'])
 def dropdown_data(request):
     """
