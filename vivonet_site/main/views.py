@@ -58,3 +58,26 @@ def dropdown_data(request):
             return Response(data)
     except:
         return Response(data)
+        
+@api_view(['GET'])
+def customer_data(request):     
+
+    """
+    { 
+      '20.0.0.1' : 'DEN',
+      '20.0.0.2' : 'SFO'
+    }
+    """
+    data = []
+    try:
+        if request.method == 'GET':
+            cust_data = Customer.objects.all()
+            for c in cust_data:
+                temp = {}
+                temp[c.Prefix] = c.location
+                data.append(temp)
+        return Response(data)
+        
+    except:
+        return Response(data)
+    
