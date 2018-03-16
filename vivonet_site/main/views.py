@@ -74,7 +74,7 @@ def customer_data(request):
             cust_data = Customer.objects.all()
             for c in cust_data:
                 temp = {}
-                temp[c.Prefix] = c.location
+                temp[c.Connected_Host] = c.location
                 data.append(temp)
         return Response(data)
         
