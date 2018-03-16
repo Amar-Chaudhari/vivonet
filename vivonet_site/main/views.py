@@ -71,13 +71,13 @@ def customer_data(request):
     data = []
     try:
         if request.method == 'GET':
-            intents_all = Intent_Data.objects.all()
-            for intent in intents_all:
-                location = Customer.objects.filter(Prefix=intent.Source_IP).values_list('location', flat=True)[0]
+            cust_data = Customer.objects.all()
+            for c in cust_data:
                 temp = {}
-                temp[intent.Source_IP] = location
+                temp[c.Prefix] = c.location
                 data.append(temp)
-            return Response(data)
+        return Response(data)
+        
     except:
         return Response(data)
     

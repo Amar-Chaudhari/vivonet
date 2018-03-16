@@ -8,7 +8,7 @@ urls_basics = [
     url('topology', network_topology, name='index'),
     url('testdb', testdb),
     url('api/dropdown_data$', dropdown_data),
-	url('api/customer_data', customer_data),
+	url('api/customer_data$', customer_data),
 
 ]
 
