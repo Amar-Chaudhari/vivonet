@@ -121,14 +121,20 @@
 			<ul id="intent_list" class="activity-list">
             </ul>
 			</div>
+          </div>          
+		  <div class="widget-title"> <a href="#collapseTwo" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
+            <h5>Network Details</h5>
+            </a> </div>
+          <div class="collapse in" id="collapseTwo">
+				<div class="widget-content"><pre id="eventSpan">Click the switch to view details.</pre></div>
           </div>
         </div>
-        <div class="widget-box">
+<!--         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
             <h5>Details</h5>
           </div>
          <div class="widget-content"><pre id="eventSpan"></pre></div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -186,7 +192,8 @@
             height: '100%',
             width: '100%',
             nodes: {shadow:true},
-            edges: {shadow:true},   
+            edges: {shadow:true}, 
+			//physics: false
         };
         network = new vis.Network(container, data, options);
 //        network.fit({scale: 4.0});
@@ -297,8 +304,27 @@
     }
 	function updateEdges(intent_path){
 		path_arr = intent_path.split("-");
+		//var newColor = '#' + Math.floor((Math.random() * 255 * 255 * 255)).toString(16);
+		var newColor = 'green';
 
-		console.log(intent_path);
+		edgeIDs = edges.getIds();
+		for (var i = 0; i < edgeIDs.length; i++) {
+			if ('h' == edgeIDs[i].charAt(0)){
+			edges.update({
+			id: edgeIDs[i],
+			color: 'green',
+			width: 3
+			});
+			}else{
+			edges.update({
+			id: edgeIDs[i],
+			color: 'black',
+			width: 3
+
+			});
+			}
+			}
+			console.log(intent_path);
 		
 		for (i=0;i < path_arr.length; i++){
 		
@@ -306,22 +332,20 @@
 			console.log(edge_id);			
 			edges.update({
 			id:edge_id,
-			color: 'red'
+			color: newColor,
+			width: 8
+
 			});				
 			
 			edge_id = path_arr[i+1] + "-" + path_arr[i];
 			console.log(edge_id);			
 			edges.update({
 			id:edge_id,
-			color: 'red'
+			color: newColor,
+			width: 8
 			});
-				
-				
-
 		}
-		
-
-		draw();
+		//draw();
 	}
 
 	function fetchIntents(){
@@ -337,9 +361,8 @@
 						
 						intent_name = intents[i]["name"];
 						intent_path = intents[i]["path"];
-
 						$(document).ready(function(){
-							tag = "<li class='intent_name'><a href='#' onclick = \"updateEdges(\'" + intent_path  + "\')\"> <i class='icon-user'></i>"+intent_name+"</a></li>";
+							tag = "<li class='intent_name'><a href='#' onclick = \"updateEdges(\'" + intent_path+ "\')\"> <i class='icon-user'></i>"+intent_name+"</a></li>";
 							$("#intent_list").append(tag);							
 						});
 					}
@@ -352,10 +375,9 @@
 				} else {
 				
 						$(document).ready(function(){
-							$("#intent_list").append("<div class='widget-content'>There are no intents configured</div>");
+							$("#intent_list").append("<li class='intent_name'><div class='widget-content'>There are no intents configured</div></li>");
 						});	
 				}
-			
 			}
 		})
 		
@@ -368,15 +390,18 @@
 			if ('h' == edgeIDs[i].charAt(0)){
 			edges.update({
 			id: edgeIDs[i],
-			color: 'green'
+			color: 'green',
+			width: 3
+			
 			});
 			}else{
 			edges.update({
 			id: edgeIDs[i],
-			color: 'black'
+			color: 'black',
+			width: 3
 			});
 			}
-			draw();
+			//draw();
 		}
 	}
 	
@@ -409,7 +434,8 @@
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     var id = "s" + data[i]["switchDPID"];		//ID
-                    var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
+                    //var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
+                    var label = "OvS - " + String(i+1);	//Switch Text - Label
                     nodes.add({								//Push in Function Draw
                         id: id,
                         label: label,
