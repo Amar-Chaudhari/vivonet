@@ -126,7 +126,35 @@
             <h5>Network Details</h5>
             </a> </div>
           <div class="collapse in" id="collapseTwo">
-				<div class="widget-content"><pre id="eventSpan">Click the switch to view details.</pre></div>
+<!-- 				<div class="widget-content"><pre id="eventSpan">Click the switch to view details.</pre></div>-->
+
+				<div class="widget-content">
+					<table class="table table-bordered">
+						<tbody>
+							<tr>
+							<td><a href="#">Themeforest.com</a></td>
+							<td>12444</td>
+							</tr>
+							<tr>
+							<td><a href="#">Themedesigner.in</a></td>
+							<td>10455</td>
+							</tr>
+							<tr>
+							<td><a href="#">Themedesigner.in</a></td>
+							<td>8455</td>
+							</tr>
+							<tr>
+							<td><a href="#">Themedesigner.in</a></td>
+							<td>4456</td>
+							</tr>
+							<tr>
+							<td><a href="#">Themedesigner.in</a></td>
+							<td>2210</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+		
           </div>
         </div>
 <!--         <div class="widget-box">
@@ -208,6 +236,7 @@
             params.event = "[original event]";
             focusNode(params.nodes[0])            
             //details = fetchDetails(params)
+			switch_details = 
             document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
         });
         
@@ -301,7 +330,84 @@
                         errorThrown);
             }
         });
+    }	
+
+    function parseFlows(id) {
+        var flowString = "";	//Final Output Variable to be displayed on Hover
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/core/switch/" + id + "/flow/json",
+            async: false,		//Setting async to false means that the statement you are calling has to complete before the next statement in your function can be called. If you set async: true then that statement will begin it's execution and the next statement will be called regardless of whether the async statement has completed yet.
+            success: function (flowobject) {	//JSON Data fetched from URI
+                for (var i = 0; i < flowobject["flows"].length; i++) {
+                    flowString += "Flow " + i + ":";
+                    flowString += "<br>&nbsp;&nbsp;&nbsp;Packet count: " + JSON.stringify(flowobject["flows"][i]["packet_count"]); //&nbsp -> TAB/SPACE character - JSON.stringify - converts javascript value to string
+                    flowString += "<br>&nbsp;&nbsp;&nbsp;Matches: " + JSON.stringify(flowobject["flows"][i]["match"]);
+                    if (flowobject["flows"][i]["version"] == "OF_13") {
+                        flowString += "<br>&nbsp;&nbsp;&nbsp;Actions: " + JSON.stringify(flowobject["flows"][i]["instructions"]["instruction_apply_actions"]["actions"]);
+                    }
+                    if (flowobject["flows"][i]["version"] == "OF_10") {
+                        flowString += "<br>&nbsp;&nbsp;&nbsp;Actions: " + JSON.stringify(flowobject["flows"][i]["actions"]["actions"]);
+                    }
+                    flowString += "<br>";
+                }
+            }
+        });
+        return flowString;
     }
+    function loadSwitches() {
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/core/controller/switches/json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    var id = "s" + data[i]["switchDPID"];		//ID
+                    //var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
+                    var label = "OvS - " + String(i+1);	//Switch Text - Label
+                    nodes.add({								//Push in Function Draw
+                        id: id,
+                        label: label,
+                        image: DIR + 'switch.png',				//Image as node - DIR mentioned above
+                        shape: 'image',
+                        title: parseFlows(data[i]["switchDPID"])//Hover Details - Calling parseFlows function - Input Switch DPID
+                    });
+                }
+                LoadHosts();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
+                        errorThrown);
+            }
+        });
+    }
+    function LoadHosts() {															//Extract Hosts for Nodes using /wm/device
+        $.ajax({
+            url: "http://" + ipaddress + ":" + restport + "/wm/device/",
+            success: function (hosts) {
+                hosts = hosts.devices;
+                console.log(hosts);
+                for (var i = 0; i < hosts.length; i++) {
+                    if (hosts[i]["attachmentPoint"].length > 0) {
+                        var id = "h" + hosts[i]["mac"];
+                        var label = "h" + hosts[i]["ipv4"];
+                        nodes.add({
+                            id: id,
+                            label: label,
+                            image: DIR + 'cloud.png',
+                            shape: 'image',
+                            title: hosts[i]["mac"]
+                        });
+                    }
+                }
+                loadExternalLinks(hosts);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR.responseText);
+                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
+                        errorThrown);
+            }
+        });
+    }
+
+	
 	function updateEdges(intent_path){
 		path_arr = intent_path.split("-");
 		//var newColor = '#' + Math.floor((Math.random() * 255 * 255 * 255)).toString(16);
@@ -404,83 +510,8 @@
 			//draw();
 		}
 	}
+
 	
-
-    function parseFlows(id) {
-        var flowString = "";	//Final Output Variable to be displayed on Hover
-        $.ajax({
-            url: "http://" + ipaddress + ":" + restport + "/wm/core/switch/" + id + "/flow/json",
-            async: false,		//Setting async to false means that the statement you are calling has to complete before the next statement in your function can be called. If you set async: true then that statement will begin it's execution and the next statement will be called regardless of whether the async statement has completed yet.
-            success: function (flowobject) {	//JSON Data fetched from URI
-                for (var i = 0; i < flowobject["flows"].length; i++) {
-                    flowString += "Flow " + i + ":";
-                    flowString += "<br>&nbsp;&nbsp;&nbsp;Packet count: " + JSON.stringify(flowobject["flows"][i]["packet_count"]); //&nbsp -> TAB/SPACE character - JSON.stringify - converts javascript value to string
-                    flowString += "<br>&nbsp;&nbsp;&nbsp;Matches: " + JSON.stringify(flowobject["flows"][i]["match"]);
-                    if (flowobject["flows"][i]["version"] == "OF_13") {
-                        flowString += "<br>&nbsp;&nbsp;&nbsp;Actions: " + JSON.stringify(flowobject["flows"][i]["instructions"]["instruction_apply_actions"]["actions"]);
-                    }
-                    if (flowobject["flows"][i]["version"] == "OF_10") {
-                        flowString += "<br>&nbsp;&nbsp;&nbsp;Actions: " + JSON.stringify(flowobject["flows"][i]["actions"]["actions"]);
-                    }
-                    flowString += "<br>";
-                }
-            }
-        });
-        return flowString;
-    }
-    function loadSwitches() {
-        $.ajax({
-            url: "http://" + ipaddress + ":" + restport + "/wm/core/controller/switches/json",
-            success: function (data) {
-                for (var i = 0; i < data.length; i++) {
-                    var id = "s" + data[i]["switchDPID"];		//ID
-                    //var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
-                    var label = "OvS - " + String(i+1);	//Switch Text - Label
-                    nodes.add({								//Push in Function Draw
-                        id: id,
-                        label: label,
-                        image: DIR + 'switch.png',				//Image as node - DIR mentioned above
-                        shape: 'image',
-                        title: parseFlows(data[i]["switchDPID"])//Hover Details - Calling parseFlows function - Input Switch DPID
-                    });
-                }
-                LoadHosts();
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
-                        errorThrown);
-            }
-        });
-    }
-    function LoadHosts() {															//Extract Hosts for Nodes using /wm/device
-        $.ajax({
-            url: "http://" + ipaddress + ":" + restport + "/wm/device/",
-            success: function (hosts) {
-                hosts = hosts.devices;
-                console.log(hosts);
-                for (var i = 0; i < hosts.length; i++) {
-                    if (hosts[i]["attachmentPoint"].length > 0) {
-                        var id = "h" + hosts[i]["mac"];
-                        var label = "h" + hosts[i]["ipv4"];
-                        nodes.add({
-                            id: id,
-                            label: label,
-                            image: DIR + 'cloud.png',
-                            shape: 'image',
-                            title: hosts[i]["mac"]
-                        });
-                    }
-                }
-                loadExternalLinks(hosts);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR.responseText);
-                alert('Error: ' + " " + jqXHR.responseText + " \n Status: " + textStatus + " \n Error Thrown: " +
-                        errorThrown);
-            }
-        });
-    }
-
 </script>
 
 </body>
