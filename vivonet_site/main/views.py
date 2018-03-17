@@ -74,7 +74,7 @@ def customer_data(request):
             cust_data = Customer.objects.all()
             for c in cust_data:
                 data[c.Prefix] = c.location
-
+                
         return Response(data)
         
     except:
