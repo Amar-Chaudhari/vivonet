@@ -68,14 +68,13 @@ def customer_data(request):
       '20.0.0.2' : 'SFO'
     }
     """
-    data = []
+    data = {}
     try:
         if request.method == 'GET':
             cust_data = Customer.objects.all()
             for c in cust_data:
-                temp = {}
-                temp[c.Prefix] = c.location
-                data.append(temp)
+                data[c.Prefix] = c.location
+
         return Response(data)
         
     except:
