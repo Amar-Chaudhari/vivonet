@@ -73,8 +73,8 @@ def customer_data(request):
         if request.method == 'GET':
             cust_data = Customer.objects.all()
             for c in cust_data:
-                data[c.Prefix] = c.location
-                
+                data[c.Connected_Host] = c.location
+
         return Response(data)
         
     except:

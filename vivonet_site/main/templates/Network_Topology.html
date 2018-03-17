@@ -520,11 +520,10 @@
 		
             url: "http://" + dbaddress+ ":" + dbport + "/api/customer_data",
             success: function (data) {
-			
-					name = data[i][host_ip];
+					console.log(host_ip)
+					name = data[host_ip];
+					console.log(name)
                 }
-				
-            },
         });
 		
 		return name;
