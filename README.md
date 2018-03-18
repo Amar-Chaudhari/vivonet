@@ -57,7 +57,7 @@ cp -rf vivonet_site /opt/webapp/
 cd /opt/webapp/vivonet_site/
 python manage.py makemigrations
 python manage.py migrate
-python manage.py collectstatic
+python manage.py collectstatic --noinput
 systemctl restart gunicorn
 systemctl restart nginx
 ```
