@@ -210,19 +210,31 @@
         });
         
         network.on("click", function (params) {
+		
+			var details = "";
 			if (params.nodes[0]){	
 					edges_list = params.edges;
-			
-				if (params.nodes[0].charAt(0) == 's'){
-					
 					params.event = "[original event]";
 					focusNode(params.nodes[0])
 					dpid = params.nodes[0].substr(1)
-					details = fetchDetails(dpid, edges_list)
 					
+				if (params.nodes[0].charAt(0) == 's'){
+					details = fetchDetails(dpid, edges_list)
 					//document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
 					document.getElementById('eventSpan').innerHTML = details;
 				}
+				if (params.nodes[0].charAt(0) == 'h'){
+					host_ip = params.nodes[0].substr(1)
+					customer = fetchCustomer();
+					details = "<table class=\"table table-bordered\"><tbody><tr><td><a href=\"#\">Node IP</a></td><td>"+host_ip+"</td></tr>";
+					details += "<tr><td><a href=\"#\">Node Location</a></td><td>"+customer[host_ip]+"</td></tr>";
+					details += "</tbody></table>"
+					
+					document.getElementById('eventSpan').innerHTML = details
+					
+				}
+				
+				
 			}
         });
         
