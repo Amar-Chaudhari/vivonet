@@ -54,7 +54,7 @@ class ComputeAndPush(object):
             ip = output['devices'][i]['ipv4'][0]
             if ip == src_host:
                 src_switch = output['devices'][i]['attachmentPoint'][0]['switch']
-            elif ip == dst_host:
+            if ip == dst_host:
                 dst_switch = output['devices'][i]['attachmentPoint'][0]['switch']
             endport = output['devices'][i]['attachmentPoint'][0]['port']
             endpoints.append({
