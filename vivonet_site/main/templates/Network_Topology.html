@@ -126,32 +126,9 @@
             <h5>Network Details</h5>
             </a> </div>
           <div class="collapse in" id="collapseTwo">
-<!-- 				<div class="widget-content"><pre id="eventSpan">Click the switch to view details.</pre></div>-->
-
 				<div class="widget-content">
 					<table class="table table-bordered">
-						<tbody>
-							<tr>
-							<td><a href="#">Themeforest.com</a></td>
-							<td>12444</td>
-							</tr>
-							<tr>
-							<td><a href="#">Themedesigner.in</a></td>
-							<td>10455</td>
-							</tr>
-							<tr>
-							<td><a href="#">Themedesigner.in</a></td>
-							<td>8455</td>
-							</tr>
-							<tr>
-							<td><a href="#">Themedesigner.in</a></td>
-							<td>4456</td>
-							</tr>
-							<tr>
-							<td><a href="#">Themedesigner.in</a></td>
-							<td>2210</td>
-							</tr>
-						</tbody>
+						<h6 id = "eventSpan">Click the switch to view details.</h6>	
 					</table>
 				</div>
 		
@@ -233,11 +210,20 @@
         });
         
         network.on("click", function (params) {
-            params.event = "[original event]";
-            focusNode(params.nodes[0])            
-            //details = fetchDetails(params)
-			switch_details = 
-            document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+			if (params.nodes[0]){	
+					edges_list = params.edges;
+			
+				if (params.nodes[0].charAt(0) == 's'){
+					
+					params.event = "[original event]";
+					focusNode(params.nodes[0])
+					dpid = params.nodes[0].substr(1)
+					details = fetchDetails(dpid, edges_list)
+					
+					//document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+					document.getElementById('eventSpan').innerHTML = details;
+				}
+			}
         });
         
     }
@@ -268,15 +254,15 @@
                         length: EDGE_LENGTH_MAIN,
                         id: data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
                         title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
-                        color: 'red',
-                        width: 4
+                        color: 'black',
+                        width: 2
                     });
                 }
                 for (var i = 0; i < hosts.length; i++) {
                     if (hosts[i]["attachmentPoint"].length > 0) {
                         if (hosts[i].hasOwnProperty("trueAttachmentPoint") && hosts[i]["trueAttachmentPoint"][0] != null) {
                             edges.add({
-                                from: "h" + hosts[i]["mac"]
+                                from: "h" + hosts[i]["ipv4"]
                                 , to: "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 title: hosts[i]["trueAttachmentPoint"][0].switch + "/" + hosts[i]["trueAttachmentPoint"][0].port,
@@ -286,7 +272,7 @@
                         }
                         else {
                             edges.add({
-                                from: "h" + hosts[i]["mac"]
+                                from: "h" + hosts[i]["ipv4"]
                                 , to: "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 title: hosts[i]["attachmentPoint"][0].switch + "/" + hosts[i]["attachmentPoint"][0].port,
@@ -383,13 +369,13 @@
             url: "http://" + ipaddress + ":" + restport + "/wm/device/",
             success: function (hosts) {
                 hosts = hosts.devices;
-                console.log(hosts);
+				customer_name = fetchCustomer();
                 for (var i = 0; i < hosts.length; i++) {
                     if (hosts[i]["attachmentPoint"].length > 0) {
-                        var id = "h" + hosts[i]["mac"];
-						customer_name = fetchCustomer(hosts[i]["ipv4"]);
-                       // var label = "h" + hosts[i]["ipv4"];
-                        var label = customer_name;
+                        var id = "h" + hosts[i]["ipv4"];
+                        var label = customer_name[hosts[i]["ipv4"]];
+                        //var label = id;
+					   
                         nodes.add({
                             id: id,
                             label: label,
@@ -514,20 +500,47 @@
 	}
 
 
-	
-    function fetchCustomer(host_ip) {
-        $.ajax({
-		
+    function fetchCustomer() {
+		$.ajax({
             url: "http://" + dbaddress+ ":" + dbport + "/api/customer_data",
+			async: false,
             success: function (data) {
-					console.log(host_ip)
-					name = data[host_ip];
-					console.log(name)
+				customer_data = data;
                 }
         });
-		
-		return name;
+		return customer_data;
     }
+	
+	function fetchDetails(dpid, edges_list){
+	//var switch_details = "<div class=\"widget-content\"><table class=\"table table-bordered\"><tbody><tr><td><a href=\"#\">OvS DPID</a></td><td>"+dpid+"</td></tr>";
+	var switch_details = "<table class=\"table table-bordered\"><tbody><tr><td><a href=\"#\">Switch DPID</a></td><td>"+dpid+"</td></tr>";
+	
+		$.ajax({
+				url: "http://" + ipaddress+ ":" + restport + "/wm/core/controller/switches/json",
+				async: false,
+				success: function (data) {
+					for(i=0; i<data.length; i++){
+						if (data[i]["switchDPID"] == dpid){
+						switch_details += "<tr><td><a href=\"#\">Management IP:</a></td><td>"+data[i]['inetAddress'].substr(1)+"</td></tr>"
+						}
+					}
+					
+				}
+			});	
+		$.ajax({
+				url: "http://" + ipaddress+ ":" + restport + "/wm/core/switch/"+dpid+"/desc/json",
+				async: false,
+				success: function (data) {
+					switch_details += "<tr><td><a href=\"#\">Hardware Description:</a></td><td>"+data['desc']['hardware_description']+"</td></tr>";
+					switch_details += "<tr><td><a href=\"#\">OpenFlow Version:</a></td><td>"+data['desc']['version']+"</td></tr>";
+				}	
+		});
+		
+		
+		switch_details += "</tbody></table>"
+		//switch_details += "</tbody></table></div>"
+		return switch_details;
+	}
 	
 </script>
 
