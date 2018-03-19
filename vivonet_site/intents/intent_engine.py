@@ -219,13 +219,6 @@ class ComputeAndPush(object):
     def intentEngine(self):
         return self.add_intent_path_data()
 
-
-
-
-
-
-
-
 if __name__ == '__main__':
     c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_latency')
     c.create_flows()
