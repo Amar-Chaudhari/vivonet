@@ -100,7 +100,8 @@
     <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="/topology" class="current">Network Topology</a> </div>
   </div>
   <div class="container-fluid">
-  
+    <div class="row-fluid">
+		
       <div class="span8">
         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
@@ -120,16 +121,27 @@
 			<ul id="intent_list" class="activity-list">
             </ul>
 			</div>
+          </div>          
+		  <div class="widget-title"> <a href="#collapseTwo" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
+            <h5>Network Details</h5>
+            </a> </div>
+          <div class="collapse in" id="collapseTwo">
+				<div class="widget-content">
+					<table class="table table-bordered">
+						<h6 id = "eventSpan">Click the switch to view details.</h6>	
+					</table>
+				</div>
+		
           </div>
         </div>
-        <div class="widget-box">
+<!--         <div class="widget-box">
           <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
             <h5>Details</h5>
           </div>
          <div class="widget-content"><pre id="eventSpan"></pre></div>
-        </div>
+        </div> -->
       </div>
-	  
+    </div>
   </div>
 </div>
 <!--Footer-part-->
@@ -185,8 +197,8 @@
             height: '100%',
             width: '100%',
             nodes: {shadow:true},
-            edges: {shadow:true},   
-            physics: true
+            edges: {shadow:true}, 
+			//physics: false
         };
         network = new vis.Network(container, data, options);
 //        network.fit({scale: 4.0});
@@ -198,10 +210,32 @@
         });
         
         network.on("click", function (params) {
-            params.event = "[original event]";
-            focusNode(params.nodes[0])            
-            //details = fetchDetails(params)
-            document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+		
+			var details = "";
+			if (params.nodes[0]){	
+					edges_list = params.edges;
+					params.event = "[original event]";
+					focusNode(params.nodes[0])
+					dpid = params.nodes[0].substr(1)
+					
+				if (params.nodes[0].charAt(0) == 's'){
+					details = fetchDetails(dpid, edges_list)
+					//document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+					document.getElementById('eventSpan').innerHTML = details;
+				}
+				if (params.nodes[0].charAt(0) == 'h'){
+					host_ip = params.nodes[0].substr(1)
+					customer = fetchCustomer();
+					details = "<table class=\"table table-bordered\"><tbody><tr><td><a href=\"#\">Node IP</a></td><td>"+host_ip+"</td></tr>";
+					details += "<tr><td><a href=\"#\">Node Location</a></td><td>"+customer[host_ip]+"</td></tr>";
+					details += "</tbody></table>"
+					
+					document.getElementById('eventSpan').innerHTML = details
+					
+				}
+				
+				
+			}
         });
         
     }
@@ -219,7 +253,7 @@
       network.focus(nodeId, options);
     }
     
-    //loadSwitches();
+    loadSwitches();
     function loadExternalLinks(hosts) { 														//Connect external links - Usually empty
         var url = "http://" + ipaddress + ":" + restport + "/wm/topology/external-links/json";
         $.ajax({
@@ -232,15 +266,15 @@
                         length: EDGE_LENGTH_MAIN,
                         id: data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
                         title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
-                        color: 'red',
-                        width: 4
+                        color: 'black',
+                        width: 2
                     });
                 }
                 for (var i = 0; i < hosts.length; i++) {
                     if (hosts[i]["attachmentPoint"].length > 0) {
                         if (hosts[i].hasOwnProperty("trueAttachmentPoint") && hosts[i]["trueAttachmentPoint"][0] != null) {
                             edges.add({
-                                from: "h" + hosts[i]["mac"]
+                                from: "h" + hosts[i]["ipv4"]
                                 , to: "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["trueAttachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 title: hosts[i]["trueAttachmentPoint"][0].switch + "/" + hosts[i]["trueAttachmentPoint"][0].port,
@@ -250,7 +284,7 @@
                         }
                         else {
                             edges.add({
-                                from: "h" + hosts[i]["mac"]
+                                from: "h" + hosts[i]["ipv4"]
                                 , to: "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 id: "h" + hosts[i]["ipv4"] + "-" + "s" + hosts[i]["attachmentPoint"][0].switch, length: EDGE_LENGTH_MAIN,
                                 title: hosts[i]["attachmentPoint"][0].switch + "/" + hosts[i]["attachmentPoint"][0].port,
@@ -277,7 +311,9 @@
                 for (var i = 0; i < data.length; i++) {
                     edges.add({
                         from: "s" + data[i]["src-switch"], to: "s" + data[i]["dst-switch"], length: EDGE_LENGTH_MAIN,
-                        id: "s" + data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + "s" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
+                        id: data[i]["src-switch"] +  "-" + data[i]["dst-switch"],
+						//id: "s" + data[i]["src-switch"] + "/" + data[i]["src-port"] + "-" + "s" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
+
                         title: data[i]["src-switch"] + "/" + data[i]["src-port"] + "<br>" + data[i]["dst-switch"] + "/" + data[i]["dst-port"],
 						
                         color: 'black',
@@ -292,64 +328,7 @@
                         errorThrown);
             }
         });
-    }
-	function updateEdges(){
-		edges.update({
-		id:"s00:00:00:0c:29:0d:e7:4c/1-s00:00:00:0c:29:8b:2b:ad/2",
-		color: 'red'
-		});
-		draw();
-	}
-
-	function fetchIntents(){
-		$.ajax({
-            url: "http://" + dbaddress + ":" + dbport + "/api/dropdown_data",
-            success: function (intents) {
-				$(document).ready(function(){
-					
-					$(".intent_name").remove();
-				});
-				if (intents.length != 0){
-					console.log("fetch")
-					for (var i = 0; i < intents.length; i++) {
-						
-						intent_name = intents[i]["name"];
-						intent_path = intents[i]["path"];
-
-						$(document).ready(function(){
-							
-							$("#intent_list").append("<li class='intent_name'><a href='#' onclick = 'updateEdges()'> <i class='icon-user'></i>"+intent_name+"</a></li>");
-						});
-						
-						
-						path_arr = intent_path.split("-");
-						
-						
-					}
-				} else {
-				
-						$(document).ready(function(){
-							$("#intent_list").append("<div class='widget-content'>There are no intents configured</div>");
-						});	
-				}
-			
-			}
-		})
-		
-	}
-	
-	function resetEdges(){
-		
-		edgeIDs = edges.getIds();
-		for (var i = 0; i < edgeIDs.length; i++) {
-			edges.update({
-			id: edgeIDs[i],
-			color: 'black'
-			});
-			draw();
-		}
-	}
-	
+    }	
 
     function parseFlows(id) {
         var flowString = "";	//Final Output Variable to be displayed on Hover
@@ -379,7 +358,8 @@
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     var id = "s" + data[i]["switchDPID"];		//ID
-                    var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
+                    //var label = "s" + data[i]["switchDPID"];	//Switch Text - Label
+                    var label = "OvS - " + String(i+1);	//Switch Text - Label
                     nodes.add({								//Push in Function Draw
                         id: id,
                         label: label,
@@ -401,11 +381,13 @@
             url: "http://" + ipaddress + ":" + restport + "/wm/device/",
             success: function (hosts) {
                 hosts = hosts.devices;
-                console.log(hosts);
+				customer_name = fetchCustomer();
                 for (var i = 0; i < hosts.length; i++) {
                     if (hosts[i]["attachmentPoint"].length > 0) {
-                        var id = "h" + hosts[i]["mac"];
-                        var label = "h" + hosts[i]["ipv4"];
+                        var id = "h" + hosts[i]["ipv4"];
+                        var label = customer_name[hosts[i]["ipv4"]];
+                        //var label = id;
+					   
                         nodes.add({
                             id: id,
                             label: label,
@@ -425,6 +407,153 @@
         });
     }
 
+	
+	function updateEdges(intent_path){
+		path_arr = intent_path.split("-");
+		//var newColor = '#' + Math.floor((Math.random() * 255 * 255 * 255)).toString(16);
+		var newColor = 'green';
+
+		edgeIDs = edges.getIds();
+		for (var i = 0; i < edgeIDs.length; i++) {
+			if ('h' == edgeIDs[i].charAt(0)){
+			edges.update({
+			id: edgeIDs[i],
+			color: 'green',
+			width: 3
+			});
+			}else{
+			edges.update({
+			id: edgeIDs[i],
+			color: 'black',
+			width: 3
+
+			});
+			}
+			}
+			console.log(intent_path);
+		
+		for (i=0;i < path_arr.length; i++){
+		
+			edge_id = path_arr[i] + "-" + path_arr[i+1];
+			console.log(edge_id);			
+			edges.update({
+			id:edge_id,
+			color: newColor,
+			width: 8
+
+			});				
+			
+			edge_id = path_arr[i+1] + "-" + path_arr[i];
+			console.log(edge_id);			
+			edges.update({
+			id:edge_id,
+			color: newColor,
+			width: 8
+			});
+		}
+		//draw();
+	}
+
+	function fetchIntents(){
+		$.ajax({
+            url: "http://" + dbaddress + ":" + dbport + "/api/dropdown_data",
+            success: function (intents) {
+				$(document).ready(function(){
+					
+					$(".intent_name").remove();
+				});
+				if (intents.length != 0){
+					for (var i = 0; i < intents.length; i++) {
+						
+						intent_name = intents[i]["name"];
+						intent_path = intents[i]["path"];
+						$(document).ready(function(){
+							tag = "<li class='intent_name'><a href='#' onclick = \"updateEdges(\'" + intent_path+ "\')\"> <i class='icon-user'></i>"+intent_name+"</a></li>";
+							$("#intent_list").append(tag);							
+						});
+					}
+					
+					$(document).ready(function(){
+							tag = "<li class='intent_name'><a href='#' onclick = \"resetEdges()\"> <i class='icon-user'></i>Reset Topology</a></li>";
+							$("#intent_list").append(tag);							
+						});
+						
+				} else {
+				
+						$(document).ready(function(){
+							$("#intent_list").append("<li class='intent_name'><div class='widget-content'>There are no intents configured</div></li>");
+						});	
+				}
+			}
+		})
+		
+	}
+	
+	function resetEdges(){
+		
+		edgeIDs = edges.getIds();
+		for (var i = 0; i < edgeIDs.length; i++) {
+			if ('h' == edgeIDs[i].charAt(0)){
+			edges.update({
+			id: edgeIDs[i],
+			color: 'green',
+			width: 3
+			
+			});
+			}else{
+			edges.update({
+			id: edgeIDs[i],
+			color: 'black',
+			width: 3
+			});
+			}
+			//draw();
+		}
+	}
+
+
+    function fetchCustomer() {
+		$.ajax({
+            url: "http://" + dbaddress+ ":" + dbport + "/api/customer_data",
+			async: false,
+            success: function (data) {
+				customer_data = data;
+                }
+        });
+		return customer_data;
+    }
+	
+	function fetchDetails(dpid, edges_list){
+	//var switch_details = "<div class=\"widget-content\"><table class=\"table table-bordered\"><tbody><tr><td><a href=\"#\">OvS DPID</a></td><td>"+dpid+"</td></tr>";
+	var switch_details = "<table class=\"table table-bordered\"><tbody><tr><td><a href=\"#\">Switch DPID</a></td><td>"+dpid+"</td></tr>";
+	
+		$.ajax({
+				url: "http://" + ipaddress+ ":" + restport + "/wm/core/controller/switches/json",
+				async: false,
+				success: function (data) {
+					for(i=0; i<data.length; i++){
+						if (data[i]["switchDPID"] == dpid){
+						switch_details += "<tr><td><a href=\"#\">Management IP:</a></td><td>"+data[i]['inetAddress'].substr(1)+"</td></tr>"
+						}
+					}
+					
+				}
+			});	
+		$.ajax({
+				url: "http://" + ipaddress+ ":" + restport + "/wm/core/switch/"+dpid+"/desc/json",
+				async: false,
+				success: function (data) {
+					switch_details += "<tr><td><a href=\"#\">Hardware Description:</a></td><td>"+data['desc']['hardware_description']+"</td></tr>";
+					switch_details += "<tr><td><a href=\"#\">OpenFlow Version:</a></td><td>"+data['desc']['version']+"</td></tr>";
+				}	
+		});
+		
+		
+		switch_details += "</tbody></table>"
+		//switch_details += "</tbody></table></div>"
+		return switch_details;
+	}
+	
 </script>
 
 </body>
