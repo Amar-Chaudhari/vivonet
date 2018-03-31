@@ -2,15 +2,18 @@ import logging
 
 from django_alexa.api import fields, intent, ResponseBuilder
 
+from main.models import *
+
 logger = logging.getLogger("django_alexa.views")
 
-INTENT_TYPES = ("least latency", "high bandwidth", "100ms latency")
+INTENT_TYPES = ("least latency", "high bandwidth", "100ms latency", "least hopcount")
 
 
 class CreateIntentSlots(fields.AmazonSlots):
     intent_type = fields.AmazonCustom(label="INTENT_TYPES", choices=INTENT_TYPES)
     to_city = fields.AmazonUSCity()
     from_city = fields.AmazonUSCity()
+
 
 @intent(app="intents")
 def LaunchRequest(session):
@@ -23,7 +26,8 @@ def LaunchRequest(session):
     logging.info("Launching Intent Invoked")
     kwargs = {}
     kwargs['message'] = "Welcome to ViVoNet."
-    kwargs['reprompt'] = "Which intent would you like to setup? You can say least latency, bandwidth or hopcount"
+    kwargs[
+        'reprompt'] = "Which intent would you like to setup? You can say least latency, least hopcount or high bandwidth"
     kwargs["end_session"] = False
     kwargs["launched"] = True
     return ResponseBuilder.create_response(**kwargs)
@@ -39,6 +43,19 @@ def HelpIntent(session):
     information
     """
     message = "Using our skill you can simplify network management."
+    return ResponseBuilder.create_response(message=message)
+
+
+@intent(app="intents")
+def StopIntent(session):
+    """
+    Default help intent
+    ---
+    help
+    info
+    information
+    """
+    message = "Good Bye!"
     return ResponseBuilder.create_response(message=message)
 
 
@@ -61,21 +78,43 @@ def CreateIntent(session, intent_type, from_city, to_city):
     kwargs['from_city'] = from_city = from_city or session.get('attributes').get('from_city')
     kwargs['intent_type'] = intent_type = intent_type or session.get('attributes').get('intent_type')
     logging.info(session)
-    if intent_type is None:
-        kwargs['message'] = "Which intent would you like to setup? You can say least latency, bandwidth or hopcount"
+    if intent_type:
+        types = ["least latency", "high bandwidth", "100ms latency", "least hopcount"]
+        if intent_type not in types:
+            kwargs['message'] = "Unsupported intent given."
+            kwargs['reprompt'] = "You can say least latency, least hop-count or high bandwidth."
+            kwargs['end_session'] = False
+            return ResponseBuilder.create_response(**kwargs)
+    elif intent_type is None:
+        kwargs['message'] = "Which intent would you like to setup?"
+        kwargs['reprompt'] = "You can say least latency, least hop-count or high bandwidth."
         kwargs['end_session'] = False
         return ResponseBuilder.create_response(**kwargs)
+    if from_city and to_city:
+        supported_locations = Customer.objects.values_list('location', flat=True)
+        supported_locations_lower = map(lambda x: x.lower(), supported_locations)
+        if from_city.lower() not in supported_locations_lower or to_city.lower() not in supported_locations_lower:
+            kwargs['message'] = "Requested cities not supported!"
+            kwargs['reprompt'] = "You can say {0} to {1} or any other supported US City.".format(supported_locations[0],
+                                                                                                 supported_locations[1])
+            kwargs["end_session"] = False
+            return ResponseBuilder.create_response(**kwargs)
     elif from_city is None or to_city is None:
-        kwargs['message'] = "From which city to what city do you want the path?"
-        kwargs['reprompt'] = "You can say Denver to Los Angeles or any other US City"
+        supported_locations = Customer.objects.values_list('location', flat=True)
+        kwargs['message'] = "Between which two cities do you want the path ?"
+        if len(supported_locations) >= 2:
+            kwargs['reprompt'] = "You can say {0} to {1} or any other supported US City.".format(supported_locations[0],
+                                                                                                 supported_locations[1])
+        else:
+            kwargs['reprompt'] = "You can say Denver to Los Angeles or any other US City."
         kwargs["end_session"] = False
         return ResponseBuilder.create_response(**kwargs)
-    else:
-        kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}".format(intent_type, from_city, to_city)
-        kwargs.pop('to_city')
-        kwargs.pop('from_city')
-        kwargs.pop('intent_type')
-        kwargs['launched'] = False
-        kwargs["end_session"] = True
-        logging.info("Create Intent Finished")
+
+    kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}".format(intent_type, from_city, to_city)
+    kwargs.pop('to_city')
+    kwargs.pop('from_city')
+    kwargs.pop('intent_type')
+    kwargs['launched'] = False
+    kwargs["end_session"] = True
+    logging.info("Create Intent Finished")
     return ResponseBuilder.create_response(**kwargs)
