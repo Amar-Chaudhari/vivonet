@@ -13,7 +13,7 @@ class CreateIntentSlots(fields.AmazonSlots):
     intent_type = fields.AmazonCustom(label="INTENT_TYPES", choices=INTENT_TYPES)
     to_city = fields.AmazonUSCity()
     from_city = fields.AmazonUSCity()
-    confirmation = fields.AmazonCustom(choices=("yes","no"))
+    confirmation = fields.AmazonCustom(label="CONFIRMATION",choices=("yes","no"))
 
 
 @intent(app="intents")
@@ -103,7 +103,7 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
             return ResponseBuilder.create_response(**kwargs)
     elif from_city is None or to_city is None:
         supported_locations = Customer.objects.values_list('location', flat=True)
-        kwargs['message'] = "Between which two cities do you want the path ?"
+        kwargs['message'] = "Between which two cities do you want the path?."
         if len(supported_locations) >= 2:
             kwargs['reprompt'] = "You can say {0} to {1} or any other supported US City.".format(supported_locations[0],
                                                                                                  supported_locations[1])
@@ -113,12 +113,13 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
         return ResponseBuilder.create_response(**kwargs)
 
     if not confirmation:
-        kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}".format(intent_type, from_city, to_city)
-        kwargs['reprompt'] = "Please confirm by saying Yes or No"
+        kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}.".format(intent_type, from_city, to_city)
+        kwargs['reprompt'] = "Please confirm by saying Yes or No."
+        kwargs["end_session"] = False
         return ResponseBuilder.create_response(**kwargs)
 
     elif "yes" in confirmation:
-        kwargs['message'] = "The requested intent has been setup"
+        kwargs['message'] = "The requested intent has been setup."
         kwargs.pop('from_city')
         kwargs.pop('intent_type')
         kwargs['launched'] = False
@@ -127,7 +128,7 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
         return ResponseBuilder.create_response(**kwargs)
 
     elif "no" in confirmation:
-        kwargs['message'] = "The requested intent has been cancelled"
+        kwargs['message'] = "The requested intent has been cancelled."
         kwargs.pop('from_city')
         kwargs.pop('intent_type')
         kwargs['launched'] = False
@@ -135,4 +136,7 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
         logging.info("Create Intent Finished")
         return ResponseBuilder.create_response(**kwargs)
 
+    kwargs['message'] = "Unfortunately, something went wrong!"
+    kwargs['reprompt'] = "Please restart by saying launch ViVoNet."
+    kwargs["end_session"] = True
     return ResponseBuilder.create_response(**kwargs)
