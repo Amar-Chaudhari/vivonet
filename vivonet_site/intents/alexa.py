@@ -13,6 +13,7 @@ class CreateIntentSlots(fields.AmazonSlots):
     intent_type = fields.AmazonCustom(label="INTENT_TYPES", choices=INTENT_TYPES)
     to_city = fields.AmazonUSCity()
     from_city = fields.AmazonUSCity()
+    confirmation = fields.AmazonCustom(choices=("yes","no"))
 
 
 @intent(app="intents")
@@ -60,7 +61,7 @@ def StopIntent(session):
 
 
 @intent(app="intents", slots=CreateIntentSlots)
-def CreateIntent(session, intent_type, from_city, to_city):
+def CreateIntent(session, intent_type, from_city, to_city, confirmation):
     """
     Accept Create Intent
     ---
@@ -77,6 +78,7 @@ def CreateIntent(session, intent_type, from_city, to_city):
     kwargs['to_city'] = to_city = to_city or session.get('attributes').get('to_city')
     kwargs['from_city'] = from_city = from_city or session.get('attributes').get('from_city')
     kwargs['intent_type'] = intent_type = intent_type or session.get('attributes').get('intent_type')
+    kwargs['confirmation'] = confirmation = confirmation or session.get('attributes').get('confirmation')
     logging.info(session)
     if intent_type:
         types = ["least latency", "high bandwidth", "100ms latency", "least hopcount"]
@@ -110,11 +112,27 @@ def CreateIntent(session, intent_type, from_city, to_city):
         kwargs["end_session"] = False
         return ResponseBuilder.create_response(**kwargs)
 
-    kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}".format(intent_type, from_city, to_city)
-    kwargs.pop('to_city')
-    kwargs.pop('from_city')
-    kwargs.pop('intent_type')
-    kwargs['launched'] = False
-    kwargs["end_session"] = True
-    logging.info("Create Intent Finished")
+    if not confirmation:
+        kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}".format(intent_type, from_city, to_city)
+        kwargs['reprompt'] = "Please confirm by saying Yes or No"
+        return ResponseBuilder.create_response(**kwargs)
+
+    elif "yes" in confirmation:
+        kwargs['message'] = "The requested intent has been setup"
+        kwargs.pop('from_city')
+        kwargs.pop('intent_type')
+        kwargs['launched'] = False
+        kwargs["end_session"] = True
+        logging.info("Create Intent Finished")
+        return ResponseBuilder.create_response(**kwargs)
+
+    elif "no" in confirmation:
+        kwargs['message'] = "The requested intent has been cancelled"
+        kwargs.pop('from_city')
+        kwargs.pop('intent_type')
+        kwargs['launched'] = False
+        kwargs["end_session"] = True
+        logging.info("Create Intent Finished")
+        return ResponseBuilder.create_response(**kwargs)
+
     return ResponseBuilder.create_response(**kwargs)
