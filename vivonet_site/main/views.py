@@ -79,4 +79,8 @@ def customer_data(request):
         
     except:
         return Response(data)
-    
+
+
+@api_view(['GET'])
+def login(request):		
+    return render(request, 'login.html')
