@@ -3,6 +3,7 @@ import logging
 from django_alexa.api import fields, intent, ResponseBuilder
 
 from main.models import *
+import duo_client
 
 logger = logging.getLogger("django_alexa.views")
 
@@ -114,12 +115,16 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
 
     if not confirmation:
         kwargs['message'] = "ViVoNet will setup a {0} path from {1} to {2}.".format(intent_type, from_city, to_city)
-        kwargs['reprompt'] = "Please confirm by saying Yes or No."
+        kwargs['reprompt'] = "Please confirm by saying Yes or No. Please approve the 2 factor request as well!"
         kwargs["end_session"] = False
         return ResponseBuilder.create_response(**kwargs)
 
     elif "yes" in confirmation:
-        kwargs['message'] = "The requested intent has been setup."
+        check = authenticate_intent()
+        if check == "allow":
+            kwargs['message'] = "The requested intent has been setup."
+        elif check == "deny":
+            kwargs['message'] = "The requested intent has been cancelled."
         kwargs.pop('from_city')
         kwargs.pop('intent_type')
         kwargs['launched'] = False
@@ -140,3 +145,16 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
     kwargs['reprompt'] = "Please restart by saying launch ViVoNet."
     kwargs["end_session"] = True
     return ResponseBuilder.create_response(**kwargs)
+
+
+def authenticate_intent():
+    try:
+        auth_client = duo_client.Auth(
+            ikey='DI2915C2QQOW6T1TAOBU',
+            skey='QsufyeqbDYdI5Sh4EMkroCorfcANCMMoF3E5F10l',
+            host="api-53df2292.duosecurity.com",
+        )
+        status = auth_client.auth(device="auto",factor="push",username="amar")
+        return status['status']
+    except:
+        return "deny"
