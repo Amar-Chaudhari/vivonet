@@ -4,6 +4,7 @@ from django_alexa.api import fields, intent, ResponseBuilder
 
 from main.models import *
 import duo_client
+from intents.intent_engine import *
 
 logger = logging.getLogger("django_alexa.views")
 
@@ -122,7 +123,11 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
     elif "yes" in confirmation:
         check = authenticate_intent()
         if check == "allow":
-            kwargs['message'] = "The requested intent has been setup."
+            check_intent_status = create_intent(from_city,to_city,intent_type)
+            if check_intent_status == True:
+                kwargs['message'] = "The requested intent has been setup."
+            elif check_intent_status == False:
+                kwargs['message'] = "Some error occured in the bankend."
         elif check == "deny":
             kwargs['message'] = "The requested intent has been cancelled."
         kwargs.pop('from_city')
@@ -146,6 +151,23 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
     kwargs["end_session"] = True
     return ResponseBuilder.create_response(**kwargs)
 
+
+def create_intent(from_city,to_city,intent_type):
+    if "least latency" in intent_type.lower():
+        intent_type = "least_latency"
+    elif "high bandwidth" in intent_type.lower():
+        intent_type = "high_bandwidth"
+    elif "least hopcount" in intent_type.lower():
+        intent_type = "least_hopcount"
+    try:
+        c = ComputeAndPush('10.0.1.200', from_city.upper(), to_city.upper(), intent_type)
+        status = c.intentEngine()
+        if status is not False:
+            return True
+        else:
+            return False
+    except:
+        return False
 
 def authenticate_intent():
     try:
