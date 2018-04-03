@@ -164,7 +164,6 @@ class ComputeAndPush(object):
         """Add intent information to database. Returns path taken by the intent"""
 
         if self.verify_push():
-            src_location = Customer.objects.get(location=self.srcname)
             src_prefix = Customer.objects.get(location=self.srcname).Prefix
             dst_prefix = Customer.objects.get(location=self.dstname).Prefix
             path = self.find_path()
@@ -173,7 +172,8 @@ class ComputeAndPush(object):
                 if hop['dpid'] not in dpid:
                     dpid.append(hop['dpid'])
             dpid_list = "-".join(dpid)
-            Intent_Data.objects.create(Customer_id=src_location.id,
+            Intent_Data.objects.create(From_Location=self.srcname,
+                                            To_Location=self.dstname,
                                             Intent_Type=self.intent,
                                             Source_IP=src_prefix,
                                             Destination_IP=dst_prefix,
@@ -218,6 +218,7 @@ class ComputeAndPush(object):
 
     def intentEngine(self):
         return self.add_intent_path_data()
+
 
 if __name__ == '__main__':
     c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_latency')

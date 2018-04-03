@@ -9,7 +9,6 @@ urls_basics = [
     url('testdb', testdb),
     url('api/dropdown_data$', dropdown_data),
 	url('api/customer_data$', customer_data),
-	url('login', login)
 
 ]
 
