@@ -162,7 +162,11 @@ def create_intent(from_city,to_city,intent_type):
     try:
         c = ComputeAndPush('10.0.1.200', from_city.upper(), to_city.upper(), intent_type)
         status = c.intentEngine()
-        if status is not False:
+
+        c2 = ComputeAndPush('10.0.1.200', to_city.upper(), from_city.upper(), intent_type)
+        status2 = c2.intentEngine()
+
+        if status is not False and status2 is not False:
             return True
         else:
             return False
