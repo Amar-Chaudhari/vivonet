@@ -171,15 +171,15 @@ class ComputeAndPush(object):
             for hop in path:
                 if hop['dpid'] not in dpid:
                     dpid.append(hop['dpid'])
-
+            dpid_list = "-".join(dpid)
             Intent_Data.objects.create(From_Location=self.srcname,
                                             To_Location=self.dstname,
                                             Intent_Type=self.intent,
                                             Source_IP=src_prefix,
                                             Destination_IP=dst_prefix,
-                                            Path=dpid,
+                                            Path=dpid_list,
                                             timestamp=datetime.now())
-            return dpid
+            return dpid_list
         else:
             return False
 
@@ -218,12 +218,6 @@ class ComputeAndPush(object):
 
     def intentEngine(self):
         return self.add_intent_path_data()
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
