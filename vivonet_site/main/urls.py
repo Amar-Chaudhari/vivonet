@@ -1,12 +1,18 @@
 from django.conf.urls import url
-from django.conf import settings
-from django.conf.urls.static import static
+from rest_framework.urlpatterns import format_suffix_patterns
+
 from main.views import *
 
-
 urls_basics = [
-    url(r'^$', index_view, name='index'), url('topology',network_topology, name='index'), url('testdb',testdb),
+    url(r'^$', index_view, name='index'),
+    url('topology', network_topology, name='index'),
+    url('testdb', testdb),
+    url('api/dropdown_data$', dropdown_data),
+	url('api/customer_data$', customer_data),
+	url('login', login)
 
 ]
 
 urlpatterns = urls_basics
+
+urlpatterns = format_suffix_patterns(urlpatterns)
