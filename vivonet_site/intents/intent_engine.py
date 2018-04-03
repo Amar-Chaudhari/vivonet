@@ -164,7 +164,6 @@ class ComputeAndPush(object):
         """Add intent information to database. Returns path taken by the intent"""
 
         if self.verify_push():
-            src_location = Customer.objects.get(location=self.srcname)
             src_prefix = Customer.objects.get(location=self.srcname).Prefix
             dst_prefix = Customer.objects.get(location=self.dstname).Prefix
             path = self.find_path()
@@ -178,9 +177,9 @@ class ComputeAndPush(object):
                                             Intent_Type=self.intent,
                                             Source_IP=src_prefix,
                                             Destination_IP=dst_prefix,
-                                            Path=dpid_list,
+                                            Path=dpid,
                                             timestamp=datetime.now())
-            return dpid_list
+            return dpid
         else:
             return False
 
