@@ -172,8 +172,9 @@ class ComputeAndPush(object):
             for hop in path:
                 if hop['dpid'] not in dpid:
                     dpid.append(hop['dpid'])
-            dpid_list = "-".join(dpid)
-            Intent_Data.objects.create(Customer_id=src_location.id,
+
+            Intent_Data.objects.create(From_Location=self.srcname,
+                                            To_Location=self.dstname,
                                             Intent_Type=self.intent,
                                             Source_IP=src_prefix,
                                             Destination_IP=dst_prefix,
