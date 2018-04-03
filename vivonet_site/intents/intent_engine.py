@@ -54,7 +54,7 @@ class ComputeAndPush(object):
             ip = output['devices'][i]['ipv4'][0]
             if ip == src_host:
                 src_switch = output['devices'][i]['attachmentPoint'][0]['switch']
-            elif ip == dst_host:
+            if ip == dst_host:
                 dst_switch = output['devices'][i]['attachmentPoint'][0]['switch']
             endport = output['devices'][i]['attachmentPoint'][0]['port']
             endpoints.append({
@@ -73,7 +73,7 @@ class ComputeAndPush(object):
         for endpoint in endpoints:
             if endpoint['src_switch'] is not None:
                 srcdpid = endpoint['src_switch']
-            elif endpoint['dst_switch'] is not None:
+            if endpoint['dst_switch'] is not None:
                 dstdpid = endpoint['dst_switch']
         path = '/wm/routing/paths/fast/{}/{}/2/json'.format(srcdpid, dstdpid)
         ret = self.rest_call({}, 'GET', path)
@@ -164,7 +164,6 @@ class ComputeAndPush(object):
         """Add intent information to database. Returns path taken by the intent"""
 
         if self.verify_push():
-            src_location = Customer.objects.get(location=self.srcname)
             src_prefix = Customer.objects.get(location=self.srcname).Prefix
             dst_prefix = Customer.objects.get(location=self.dstname).Prefix
             path = self.find_path()
@@ -172,7 +171,9 @@ class ComputeAndPush(object):
             for hop in path:
                 if hop['dpid'] not in dpid:
                     dpid.append(hop['dpid'])
-            Intent_Data.objects.create(Customer_id=src_location.id,
+
+            Intent_Data.objects.create(From_Location=self.srcname,
+                                            To_Location=self.dstname,
                                             Intent_Type=self.intent,
                                             Source_IP=src_prefix,
                                             Destination_IP=dst_prefix,
@@ -185,11 +186,12 @@ class ComputeAndPush(object):
     def add_intent_path_data(self):
         """Add actual intent path to database"""
 
-        dpids = self.add_intent_data()
-        if dpids is not False:
-            path = Intent_Data.objects.get(Path=dpids)
+        dpids_list = self.add_intent_data()
+        if dpids_list is not False:
+            path = Intent_Data.objects.get(Path=dpids_list)
             intent = path.Intent_Type
 
+            dpids = dpids_list.split('-')
             for switch in dpids:
                 call = '/wm/staticflowpusher/list/{}/json'.format(switch)
                 ret = self.rest_call({}, 'GET', call)
@@ -216,13 +218,6 @@ class ComputeAndPush(object):
 
     def intentEngine(self):
         return self.add_intent_path_data()
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_latency')

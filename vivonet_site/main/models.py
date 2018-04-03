@@ -23,7 +23,8 @@ INTENT_CHOICES = (
 
 
 class Intent_Data(models.Model):
-    Customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    From_Location = models.CharField(max_length=60,default=None)
+    To_Location = models.CharField(max_length=60,default=None)
     Intent_Type = models.CharField(max_length=60, choices=INTENT_CHOICES, default=None)
     Source_IP = models.CharField(max_length=60)
     Destination_IP = models.CharField(max_length=60)
