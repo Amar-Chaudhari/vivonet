@@ -84,3 +84,8 @@ def customer_data(request):
 @api_view(['GET'])
 def login(request):		
     return render(request, 'login.html')
+	
+@api_view(['GET'])
+def intentengine(request):		
+    return render(intentengine, 'intent_engine.html')
+
