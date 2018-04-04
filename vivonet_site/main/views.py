@@ -63,6 +63,7 @@ def dropdown_data(request):
                             temp['path'] = intent.Path
                             data.append(temp)
                             skip = True
+                            break
             return Response(data)
     except:
         return Response(data)
