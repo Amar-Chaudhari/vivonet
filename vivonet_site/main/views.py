@@ -47,6 +47,25 @@ def dropdown_data(request):
         if request.method == 'GET':
             intents_all = Intent_Data.objects.all()
             skip = False
+            i = 0
+            while i < len(intents_all):
+                if skip:
+                    skip = False
+                    pass
+                else:
+                    if intents_all[i].From_Location == intents_all[i+1].To_Location and intents_all[i].To_Location == intents_all[i+1].From_Location:
+                        source = Customer.objects.filter(Prefix=intents_all[i].Source_IP).values_list('location', flat=True)[0]
+                        destination = \
+                        Customer.objects.filter(Prefix=intents_all[i].Destination_IP).values_list('location', flat=True)[
+                            0]
+                        intent_type = intents_all[i].Intent_Type
+                        temp = {}
+                        temp['name'] = "{0} to {1} - {2}".format(source, destination, intent_type)
+                        temp['path'] = intents_all[i].Path
+                        data.append(temp)
+                        skip = True
+                i += 1
+            """
             for intent in intents_all:
                 if skip:
                     skip = False
@@ -63,6 +82,7 @@ def dropdown_data(request):
                             data.append(temp)
                             skip = True
                             break
+            """
             return Response(data)
     except:
         return Response(data)
