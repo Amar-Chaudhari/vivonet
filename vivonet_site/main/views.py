@@ -48,11 +48,10 @@ def dropdown_data(request):
             intents_all = Intent_Data.objects.all()
             skip = False
             for intent in intents_all:
+                if skip:
+                    skip = False
+                    pass
                 for temp in intents_all:
-                    if skip:
-                        skip = False
-                        pass
-                    else:
                         if intent.From_Location == temp.To_Location and intent.To_Location == temp.From_Location:
                             source = Customer.objects.filter(Prefix=intent.Source_IP).values_list('location', flat=True)[0]
                             destination = Customer.objects.filter(Prefix=intent.Destination_IP).values_list('location', flat=True)[
@@ -63,7 +62,7 @@ def dropdown_data(request):
                             temp['path'] = intent.Path
                             data.append(temp)
                             skip = True
-                            #break
+                            break
             return Response(data)
     except:
         return Response(data)
