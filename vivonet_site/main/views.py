@@ -107,4 +107,11 @@ def customer_data(request):
         
     except:
         return Response(data)
-    
+
+@api_view(['GET'])
+def login(request):		
+    return render(request, 'login.html')
+	
+@api_view(['GET'])
+def intentengine(request):		
+    return render(intentengine, 'intent_engine.html')
