@@ -31,6 +31,7 @@ LOGOUT_REDIRECT_URL = '/login'
 hostname = socket.gethostname()
 if "front-server" in hostname:
     DEBUG = False
+    CSRF_COOKIE_DOMAIN = None
     #PREPEND_WWW = True
     #USE_X_FORWARDED_HOST = True
     CSRF_COOKIE_SECURE = False
