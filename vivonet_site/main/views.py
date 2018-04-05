@@ -23,7 +23,7 @@ def network_topology(request):
 
 
 def testdb(request):
-    c = ComputeAndPush('10.0.1.200', 'DENVER', 'SAN FRANCISCO', 'least_latency')
+    c = ComputeAndPush('10.0.1.200', 'DENVER', 'SAN FRANCISCO', 'high_bandwidth')
     db = c.intentEngine()
     return HttpResponse(db)
 
