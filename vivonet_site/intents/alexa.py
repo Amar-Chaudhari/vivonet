@@ -130,7 +130,7 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
         return ResponseBuilder.create_response(**kwargs)
 
     elif "yes" in confirmation:
-        check = authenticate_intent(LOGGED_IN_USER)
+        check = authenticate_intent("amar")
         if check == "allow":
             intent_type = generate_intent_type(intent_type)
             check_duplicate_intent = check_exsiting_intent(from_city.upper(), to_city.upper())
@@ -210,9 +210,7 @@ def authenticate_intent(username):
             skey='QsufyeqbDYdI5Sh4EMkroCorfcANCMMoF3E5F10l',
             host="api-53df2292.duosecurity.com",
         )
-        print username
         if username:
-
             status = auth_client.auth(device="auto", factor="push", username=username)
             return status['status']
         else:
