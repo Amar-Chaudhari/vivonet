@@ -96,6 +96,14 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
     if from_city and to_city:
         supported_locations = Customer.objects.values_list('location', flat=True)
         supported_locations_lower = map(lambda x: x.lower(), supported_locations)
+
+        if from_city.lower() == to_city.lower():
+            kwargs['message'] = "Please give different source and destination cities!"
+            kwargs['reprompt'] = "You can say {0} to {1} or any other supported US City.".format(supported_locations[0],
+                                                                                                 supported_locations[1])
+            kwargs["end_session"] = False
+            return ResponseBuilder.create_response(**kwargs)
+
         if from_city.lower() not in supported_locations_lower or to_city.lower() not in supported_locations_lower:
             kwargs['message'] = "Requested cities not supported!"
             kwargs['reprompt'] = "You can say {0} to {1} or any other supported US City.".format(supported_locations[0],
@@ -132,7 +140,7 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
                 if check_intent_status == True:
                     kwargs['message'] = "The requested intent has been setup."
                 elif check_intent_status == False:
-                    kwargs['message'] = "Some error occurred in the bank-end."
+                    kwargs['message'] = "Some error occurred in the back end."
         kwargs.pop('from_city')
         kwargs.pop('intent_type')
         kwargs['launched'] = False
