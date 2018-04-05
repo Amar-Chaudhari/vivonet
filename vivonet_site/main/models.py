@@ -13,12 +13,12 @@ class Customer(models.Model):
         return "{0} {1}".format(self.location, self.Prefix)
 
 LEAST_LATENCY = 'LEAST_LATENCY'
-BANDWIDTH = 'BANDWIDTH'
-HOP_COUNT = 'HOP_COUNT'
+HIGH_BANDWIDTH = 'HIGH_BANDWIDTH'
+LEAST_HOP_COUNT = 'LEAST_HOP_COUNT'
 INTENT_CHOICES = (
     (LEAST_LATENCY, 'least_latency'),
-    (BANDWIDTH, 'bandwidth'),
-    (HOP_COUNT, 'hop_count'),
+    (HIGH_BANDWIDTH, 'high_bandwidth'),
+    (LEAST_HOP_COUNT, 'least_hop_count'),
 )
 
 

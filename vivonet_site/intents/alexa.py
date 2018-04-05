@@ -158,7 +158,7 @@ def create_intent(from_city,to_city,intent_type):
     elif "high bandwidth" in intent_type.lower():
         intent_type = "high_bandwidth"
     elif "least hopcount" in intent_type.lower():
-        intent_type = "least_hopcount"
+        intent_type = "least_hop_count"
     try:
         c = ComputeAndPush('10.0.1.200', from_city.upper(), to_city.upper(), intent_type)
         status = c.intentEngine()
