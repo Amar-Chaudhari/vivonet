@@ -68,6 +68,8 @@ class ComputeAndPush(object):
         return endpoints
 
     def find_path_for_bw(self, srcdpid, dstdpid):
+        """Find best path depending on bandwidth"""
+        
         """print('Enable statistics collection POST')
         path = '/wm/statistics/config/enable/json'
         r = self.rest_call({}, 'POST', path)
