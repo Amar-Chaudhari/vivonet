@@ -25,6 +25,9 @@ SECRET_KEY = 'zlb-h0mykw!cgaad)gkm)-n21%(hegu&47yrweop4k=uscpim5'
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = '/login'
 hostname = socket.gethostname()
 if "front-server" in hostname:
     DEBUG = True
