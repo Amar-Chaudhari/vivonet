@@ -30,11 +30,11 @@ LOGIN_URL = '/login'
 LOGOUT_REDIRECT_URL = '/login'
 hostname = socket.gethostname()
 if "front-server" in hostname:
-    DEBUG = True
+    DEBUG = False
     #PREPEND_WWW = True
     #USE_X_FORWARDED_HOST = True
-    #CSRF_COOKIE_SECURE = True
-    #SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
     #CSRF_COOKIE_DOMAIN = '.vivonet.tk'
     #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
     LOG_FILE = "/var/log/django_logs/vivonet_site.log"
