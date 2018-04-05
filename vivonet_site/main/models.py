@@ -13,17 +13,18 @@ class Customer(models.Model):
         return "{0} {1}".format(self.location, self.Prefix)
 
 LEAST_LATENCY = 'LEAST_LATENCY'
-BANDWIDTH = 'BANDWIDTH'
-HOP_COUNT = 'HOP_COUNT'
+HIGH_BANDWIDTH = 'HIGH_BANDWIDTH'
+LEAST_HOP_COUNT = 'LEAST_HOP_COUNT'
 INTENT_CHOICES = (
     (LEAST_LATENCY, 'least_latency'),
-    (BANDWIDTH, 'bandwidth'),
-    (HOP_COUNT, 'hop_count'),
+    (HIGH_BANDWIDTH, 'high_bandwidth'),
+    (LEAST_HOP_COUNT, 'least_hop_count'),
 )
 
 
 class Intent_Data(models.Model):
-    Customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    From_Location = models.CharField(max_length=60,default=None)
+    To_Location = models.CharField(max_length=60,default=None)
     Intent_Type = models.CharField(max_length=60, choices=INTENT_CHOICES, default=None)
     Source_IP = models.CharField(max_length=60)
     Destination_IP = models.CharField(max_length=60)
