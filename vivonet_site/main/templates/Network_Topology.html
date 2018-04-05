@@ -410,8 +410,8 @@
 	
 	function updateEdges(intent_path){
 		path_arr = intent_path.split("-");
-		//var newColor = '#' + Math.floor((Math.random() * 255 * 255 * 255)).toString(16);
-		var newColor = 'green';
+		var newColor = '#' + Math.floor((Math.random() * 255 * 255 * 255)).toString(16);
+		//var newColor = 'green';
 
 		edgeIDs = edges.getIds();
 		for (var i = 0; i < edgeIDs.length; i++) {

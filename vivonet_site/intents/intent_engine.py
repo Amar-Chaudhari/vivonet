@@ -4,6 +4,7 @@ import json
 from main.models import *
 from datetime import datetime
 import re
+import time
 
 class ComputeAndPush(object):
     def __init__(self, server, srcname, dstname, intent):
@@ -66,6 +67,42 @@ class ComputeAndPush(object):
         
         return endpoints
 
+    def find_path_for_bw(self, srcdpid, dstdpid):
+        """Find best path depending on bandwidth"""
+        
+        """print('Enable statistics collection POST')
+        path = '/wm/statistics/config/enable/json'
+        r = self.rest_call({}, 'POST', path)
+
+        print('sleeping for 30 sec')
+        time.sleep(30)"""
+        path = '/wm/routing/paths/fast/{}/{}/2/json'.format(srcdpid, dstdpid)
+        ret = self.rest_call({}, 'GET', path)
+        output = json.loads(ret[2])
+        list_of_paths = output['results']
+        all_paths = []
+        for eachpathinfo in list_of_paths:  # list_of_paths is the value for result as key in the output dictionary, the value is a list with latency, path index, path etc for all paths
+            all_paths.append(eachpathinfo['path'])
+
+        available_bw = 0
+        final_path_bw = {}
+        for path in all_paths:
+            for port_dpid_info in path:
+                dpid = port_dpid_info['dpid']
+                port = port_dpid_info['port']
+                bw_path = '/wm/statistics/bandwidth/{}/{}/json'.format(dpid, port)
+                bw_eachswitch = self.rest_call({}, 'GET', bw_path)
+                bw_call = json.loads(bw_eachswitch[2])
+                bw_details = bw_call[0]
+                available_bw += 10000000000 - (
+                        int(bw_details['bits-per-second-tx']) + int(bw_details['bits-per-second-rx']))
+
+            bw_path_list = path
+            final_path_bw[available_bw] = bw_path_list
+
+        max_bw_path = final_path_bw[max(final_path_bw.keys())]
+        return max_bw_path
+
     def find_path(self):
         """To find path as per the required intent"""
 
@@ -75,13 +112,15 @@ class ComputeAndPush(object):
                 srcdpid = endpoint['src_switch']
             if endpoint['dst_switch'] is not None:
                 dstdpid = endpoint['dst_switch']
+        if self.intent == "high_bandwidth":
+            return self.find_path_for_bw(srcdpid,dstdpid)
         path = '/wm/routing/paths/fast/{}/{}/2/json'.format(srcdpid, dstdpid)
         ret = self.rest_call({}, 'GET', path)
         output = json.loads(ret[2])
-        lat1 = output['results'][0]['latency']
-        lat2 = output['results'][1]['latency']
-        hop1 = output['results'][0]['hop_count']
-        hop2 = output['results'][1]['hop_count']
+        lat1 = int(output['results'][0]['latency'])
+        lat2 = int(output['results'][1]['latency'])
+        hop1 = int(output['results'][0]['hop_count'])
+        hop2 = int(output['results'][1]['hop_count'])
         if self.intent == "least_latency":
             if lat1 <= lat2:
                 path = output['results'][0]['path']
@@ -217,12 +256,13 @@ class ComputeAndPush(object):
             return False
 
     def intentEngine(self):
-        if Intent_Data.objects.filter(From_Location=self.srcname, To_Location=self.dstname):
+        try:
+            result = self.add_intent_path_data()
+            return result
+        except:
             return False
-        else:
-            return self.add_intent_path_data()
 
 
 if __name__ == '__main__':
-    c = ComputeAndPush('198.11.21.36', 'DEN', 'SFO', 'least_latency')
+    c = ComputeAndPush('127.0.0.1', 'DENVER', 'SANFRANCISCO', 'least_latency')
     c.create_flows()
