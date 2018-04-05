@@ -254,10 +254,11 @@ class ComputeAndPush(object):
             return False
 
     def intentEngine(self):
-        if Intent_Data.objects.filter(From_Location=self.srcname, To_Location=self.dstname):
+        try:
+            result = self.add_intent_path_data()
+            return result
+        except:
             return False
-        else:
-            return self.add_intent_path_data()
 
 
 if __name__ == '__main__':
