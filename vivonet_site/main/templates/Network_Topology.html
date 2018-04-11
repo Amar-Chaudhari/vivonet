@@ -14,6 +14,69 @@
 </style>
 <link href="{% static "bower_components/visjs/vis.css"%}" rel="stylesheet"/>
 
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="/topology" class="current">Network Topology</a> </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row-fluid">
+		
+      <div class="span8">
+        <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
+            <h5>Visual Network Topology</h5>
+          </div>
+         <div class="widget-content"><div id="mynetwork"></div></div>
+        </div>
+      </div>
+	  
+      <div class="span4">
+        <div class="widget-box collapsible">
+          <div class="widget-title"> <a href="#collapseOne" onclick = "fetchIntents()" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
+            <h5>Configured Intents</h5>
+            </a> </div>
+          <div class="collapse" id="collapseOne">
+		  	<div class='widget-content'>
+			<ul id="intent_list" class="activity-list">
+            </ul>
+			</div>
+          </div>          
+		  <div class="widget-title"> <a href="#collapseTwo" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
+            <h5>Network Details</h5>
+            </a> </div>
+          <div class="collapse in" id="collapseTwo">
+				<div class="widget-content">
+					<table class="table table-bordered">
+						<h6 id = "eventSpan">Click the switch to view details.</h6>	
+					</table>
+				</div>
+		
+          </div>
+        </div>
+<!--         <div class="widget-box">
+          <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
+            <h5>Details</h5>
+          </div>
+         <div class="widget-content"><pre id="eventSpan"></pre></div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- jQuery -->
+<script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
+
+
+<!-- Page-Level Demo Scripts - Tables - Use for reference -->
+
+<script src="{% static "bower_components/js/querystringparser.js" %}"></script>
+
+<script src="{% static "bower_components/visjs/vis.js" %}"></script>
+<script src="{% static "bower_components/visjs/googleAnalytics.js" %}"></script>
+
+<script src="{% static "bower_components/js/jquery.cookie.js" %}"></script>
+
 <script type="text/javascript">
     /*
      * These cookies are set on the login page at login.html.
@@ -413,67 +476,5 @@
 </script>
 
 
-    <!-- jQuery -->
-<script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
-
-
-<!-- Page-Level Demo Scripts - Tables - Use for reference -->
-
-<script src="{% static "bower_components/js/querystringparser.js" %}"></script>
-
-<script src="{% static "bower_components/visjs/vis.js" %}"></script>
-<script src="{% static "bower_components/visjs/googleAnalytics.js" %}"></script>
-
-<script src="{% static "bower_components/js/jquery.cookie.js" %}"></script>
-
-<div id="content">
-  <div id="content-header">
-    <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="/topology" class="current">Network Topology</a> </div>
-  </div>
-  <div class="container-fluid">
-    <div class="row-fluid">
-		
-      <div class="span8">
-        <div class="widget-box">
-          <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
-            <h5>Visual Network Topology</h5>
-          </div>
-         <div class="widget-content"><div id="mynetwork"></div></div>
-        </div>
-      </div>
-	  
-      <div class="span4">
-        <div class="widget-box collapsible">
-          <div class="widget-title"> <a href="#collapseOne" onclick = "fetchIntents()" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
-            <h5>Configured Intents</h5>
-            </a> </div>
-          <div class="collapse" id="collapseOne">
-		  	<div class='widget-content'>
-			<ul id="intent_list" class="activity-list">
-            </ul>
-			</div>
-          </div>          
-		  <div class="widget-title"> <a href="#collapseTwo" data-toggle="collapse" > <span class="icon"><i class="icon-arrow-right"></i></span>
-            <h5>Network Details</h5>
-            </a> </div>
-          <div class="collapse in" id="collapseTwo">
-				<div class="widget-content">
-					<table class="table table-bordered">
-						<h6 id = "eventSpan">Click the switch to view details.</h6>	
-					</table>
-				</div>
-		
-          </div>
-        </div>
-<!--         <div class="widget-box">
-          <div class="widget-title"> <span class="icon"> <i class="icon-list"></i> </span>
-            <h5>Details</h5>
-          </div>
-         <div class="widget-content"><pre id="eventSpan"></pre></div>
-        </div> -->
-      </div>
-    </div>
-  </div>
-</div>
 
 {% endblock %}
