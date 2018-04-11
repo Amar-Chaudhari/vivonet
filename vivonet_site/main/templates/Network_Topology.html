@@ -4,6 +4,7 @@
 
 <!--close-left-menu-stats-sidebar-->
 {% block content %}
+<link href="{% static "bower_components/visjs/vis.css"%}" rel="stylesheet"/>
 
 <script type="text/javascript">
     /*
@@ -402,14 +403,15 @@
 	}
 
 </script>
-        <style type="text/css">
+
+<style type="text/css">
         #mynetwork {
             flex: 1;
             height: 550px;
             border: 1px solid lightgray;
             background-color: #f8f8f8;
         }
-    </style>
+</style>
     <!-- jQuery -->
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 
