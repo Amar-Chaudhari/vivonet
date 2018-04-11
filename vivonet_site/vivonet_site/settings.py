@@ -25,13 +25,17 @@ SECRET_KEY = 'zlb-h0mykw!cgaad)gkm)-n21%(hegu&47yrweop4k=uscpim5'
 
 ALLOWED_HOSTS = ['*']
 
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = '/login'
 hostname = socket.gethostname()
 if "front-server" in hostname:
-    DEBUG = True
+    DEBUG = False
+    CSRF_COOKIE_DOMAIN = None
     #PREPEND_WWW = True
     #USE_X_FORWARDED_HOST = True
-    #CSRF_COOKIE_SECURE = True
-    #SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = False
+    SESSION_COOKIE_SECURE = False
     #CSRF_COOKIE_DOMAIN = '.vivonet.tk'
     #SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
     LOG_FILE = "/var/log/django_logs/vivonet_site.log"

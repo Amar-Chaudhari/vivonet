@@ -2,22 +2,20 @@
 from __future__ import unicode_literals
 
 from django.shortcuts import render, HttpResponse
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.contrib.auth.decorators import login_required
 
 from intents.intent_engine import *
-from rest_framework import status
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-
+from intents.alexa import LOGGED_IN_USER
 
 # Create your views here.
+@login_required
 def index_view(request):
+    LOGGED_IN_USER = request.user.username
     return render(request, 'index.html')
 
-
+@login_required
 def network_topology(request):
     return render(request, 'Network_Topology.html')
 
@@ -26,6 +24,7 @@ def testdb(request):
     c = ComputeAndPush('10.0.1.200', 'DENVER', 'SAN FRANCISCO', 'high_bandwidth')
     db = c.intentEngine()
     return HttpResponse(db)
+
 
 @api_view(['GET'])
 def dropdown_data(request):
@@ -53,11 +52,14 @@ def dropdown_data(request):
                     skip = False
                     pass
                 else:
-                    if intents_all[i].From_Location == intents_all[i+1].To_Location and intents_all[i].To_Location == intents_all[i+1].From_Location:
-                        source = Customer.objects.filter(Prefix=intents_all[i].Source_IP).values_list('location', flat=True)[0]
+                    if intents_all[i].From_Location == intents_all[i + 1].To_Location and intents_all[i].To_Location == \
+                            intents_all[i + 1].From_Location:
+                        source = \
+                        Customer.objects.filter(Prefix=intents_all[i].Source_IP).values_list('location', flat=True)[0]
                         destination = \
-                        Customer.objects.filter(Prefix=intents_all[i].Destination_IP).values_list('location', flat=True)[
-                            0]
+                            Customer.objects.filter(Prefix=intents_all[i].Destination_IP).values_list('location',
+                                                                                                      flat=True)[
+                                0]
                         intent_type = intents_all[i].Intent_Type
                         temp = {}
                         temp['name'] = "{0} to {1} - {2}".format(source, destination, intent_type)
@@ -86,10 +88,10 @@ def dropdown_data(request):
             return Response(data)
     except:
         return Response(data)
-        
-@api_view(['GET'])
-def customer_data(request):     
 
+
+@api_view(['GET'])
+def customer_data(request):
     """
     { 
       '20.0.0.1' : 'DEN',
@@ -104,19 +106,10 @@ def customer_data(request):
                 data[c.Connected_Host] = c.location
 
         return Response(data)
-        
+
     except:
         return Response(data)
 
-@api_view(['GET'])
-def login(request):		
-    return render(request, 'login.html')
-	
-@api_view(['GET'])
-def intentengine(request):		
-<<<<<<< HEAD
+@login_required
+def intentengine(request):
     return render(request, 'intent_engine.html')
-
-=======
-    return render(intentengine, 'intent_engine.html')
->>>>>>> 3f609997764d3f4f5caf7bf7b6e0577fd65b05cf

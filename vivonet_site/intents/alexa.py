@@ -10,6 +10,7 @@ logger = logging.getLogger("django_alexa.views")
 INTENT_TYPES = ("least latency", "high bandwidth", "100ms latency", "least hopcount")
 
 
+LOGGED_IN_USER = ""
 class CreateIntentSlots(fields.AmazonSlots):
     intent_type = fields.AmazonCustom(label="INTENT_TYPES", choices=INTENT_TYPES)
     to_city = fields.AmazonUSCity()
@@ -129,7 +130,7 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
         return ResponseBuilder.create_response(**kwargs)
 
     elif "yes" in confirmation:
-        check = authenticate_intent()
+        check = authenticate_intent("amar")
         if check == "allow":
             intent_type = generate_intent_type(intent_type)
             check_duplicate_intent = check_exsiting_intent(from_city.upper(), to_city.upper())
@@ -202,14 +203,17 @@ def create_intent(from_city, to_city, intent_type):
         return False
 
 
-def authenticate_intent():
+def authenticate_intent(username):
     try:
         auth_client = duo_client.Auth(
             ikey='DI2915C2QQOW6T1TAOBU',
             skey='QsufyeqbDYdI5Sh4EMkroCorfcANCMMoF3E5F10l',
             host="api-53df2292.duosecurity.com",
         )
-        status = auth_client.auth(device="auto", factor="push", username="amar")
-        return status['status']
+        if username:
+            status = auth_client.auth(device="auto", factor="push", username=username)
+            return status['status']
+        else:
+            return "deny"
     except:
         return "deny"
