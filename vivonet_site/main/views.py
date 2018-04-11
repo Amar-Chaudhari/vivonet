@@ -114,4 +114,9 @@ def login(request):
 	
 @api_view(['GET'])
 def intentengine(request):		
+<<<<<<< HEAD
+    return render(request, 'intent_engine.html')
+
+=======
     return render(intentengine, 'intent_engine.html')
+>>>>>>> 3f609997764d3f4f5caf7bf7b6e0577fd65b05cf
