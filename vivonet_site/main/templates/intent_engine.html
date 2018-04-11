@@ -47,7 +47,7 @@
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
   <ul>
     <li><a href="/"><i class="icon icon-home"></i> <span>Home</span></a> </li>
-    <li class="active"><a href="index.html"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
+    <li class="active"><a href="/intentengine"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
     <li><a href="/topology"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
     <li><a href="index.html"><i class="icon icon-signal"></i> <span>Network Statistics</span></a> </li>
   </ul>
@@ -67,24 +67,44 @@
     <div class="span6">
       <div class="widget-box">
         <div class="widget-title"> <span class="icon"> <i class="icon-align-justify"></i> </span>
-          <h5>Form Elements</h5>
+          <h5>Text-based Intent Engine</h5>
         </div>
         <div class="widget-content nopadding">
-          <form action="#" method="get" class="form-horizontal">
+          <form name="intent_engine" action="#" method="get" class="form-horizontal">
             <div class="control-group">
-              <label class="control-label">Select input</label>
+              <label class="control-label">Select Intent</label>
               <div class="controls">
-                <select >
-                  <option>First option</option>
-                  <option>Second option</option>
-                  <option>Third option</option>
-                  <option>Fourth option</option>
-                  <option>Fifth option</option>
-                  <option>Sixth option</option>
-                  <option>Seventh option</option>
-                  <option>Eighth option</option>
+                <select name = "intent_type">
+                  <option>least latency</option>
+                  <option>high bandwidth</option>
+                  <option>least hopcount</option>
                 </select>
               </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Select Source Location</label>
+              <div class="controls">
+                <select name="source_location">
+                  <option>DENVER</option>
+                  <option>SAN FRANCISCO</option>
+                  <option>NEW YORK</option>
+                  <option>CHICAGO</option>
+                </select>
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Select Destination Location</label>
+              <div class="controls">
+                <select name="dest_location">
+                  <option>DENVER</option>
+                  <option>SAN FRANCISCO</option>
+                  <option>NEW YORK</option>
+                  <option>CHICAGO</option>
+                </select>
+              </div>
+            </div>
+			<div class="form-actions">
+              <button type="submit" onsubmit="validateForm()" method="post" class="btn btn-success">Submit</button>
             </div>
           </form>
         </div>
@@ -100,22 +120,30 @@
   <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
 </div>
 <!--end-Footer-part--> 
-<script src="js/jquery.min.js"></script> 
-<script src="js/jquery.ui.custom.js"></script> 
-<script src="js/bootstrap.min.js"></script> 
-<script src="js/bootstrap-colorpicker.js"></script> 
-<script src="js/bootstrap-datepicker.js"></script> 
-<script src="js/jquery.toggle.buttons.js"></script> 
-<script src="js/masked.js"></script> 
-<script src="js/jquery.uniform.js"></script> 
-<script src="js/select2.min.js"></script> 
-<script src="js/matrix.js"></script> 
-<script src="js/matrix.form_common.js"></script> 
-<script src="js/wysihtml5-0.3.0.js"></script> 
-<script src="js/jquery.peity.min.js"></script> 
-<script src="js/bootstrap-wysihtml5.js"></script> 
+<script src="{% static "bower_components/html-components/js/jquery.min.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/jquery.ui.custom.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/bootstrap.min.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/masked.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/jquery.uniform.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/select2.min.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/matrix.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/wysihtml5-0.3.0.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/jquery.peity.min.js"%}"></script> 
+<script src="{% static "bower_components/html-components/js/bootstrap-wysihtml5.js"%}"></script>
+ 
 <script>
 	$('.textarea_editor').wysihtml5();
+</script>
+<script type="text/javascript">
+function validateForm() {
+    var source_location = document.forms["intent_engine"]["source_location"].value;
+    var dest_location = document.forms["intent_engine"]["source_location"].value;
+	console.log(source_location, dest_location)
+    if (source_location == dest_location) {
+        alert("Source and Destination cannot be same");
+        return false;
+    }
+}
 </script>
 </body>
 </html>
