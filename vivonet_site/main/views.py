@@ -126,17 +126,27 @@ def intentengine(request):
             from_city = request.POST.get('source_location')
             to_city = request.POST.get('destination_location')
             if intent_type and from_city and to_city:
-                c = ComputeAndPush('10.0.1.200', from_city, to_city, intent_type)
-                status = c.intentEngine()
 
-                c2 = ComputeAndPush('10.0.1.200', to_city, from_city, intent_type)
-                status2 = c2.intentEngine()
+                supported_locations = Customer.objects.values_list('location', flat=True)
+                supported_locations_lower = map(lambda x: x.lower(), supported_locations)
 
-                if status is not False and status2 is not False:
-                    error = False
-                else:
+                if from_city.lower() == to_city.lower():
                     error = True
-                return render(request, 'intent_engine.html', {'error': error})
+                elif from_city.lower() not in supported_locations_lower or to_city.lower() not in supported_locations_lower:
+                    error = True
+                else:
+                    c = ComputeAndPush('10.0.1.200', from_city, to_city, intent_type)
+                    status = c.intentEngine()
+
+                    c2 = ComputeAndPush('10.0.1.200', to_city, from_city, intent_type)
+                    status2 = c2.intentEngine()
+
+                    if status is not False and status2 is not False:
+                        error = False
+                        succeed = True
+                    else:
+                        error = True
+                return render(request, 'intent_engine.html', {'error': error,'succeed': succeed})
         except Exception as e:
             error = True
             logging.error(e)
