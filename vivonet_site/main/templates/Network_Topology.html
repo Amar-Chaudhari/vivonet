@@ -4,6 +4,14 @@
 
 <!--close-left-menu-stats-sidebar-->
 {% block content %}
+    <style type="text/css">
+        #mynetwork {
+            flex: 1;
+            height: 550px;
+            border: 1px solid lightgray;
+            background-color: #f8f8f8;
+        }
+</style>
 <link href="{% static "bower_components/visjs/vis.css"%}" rel="stylesheet"/>
 
 <script type="text/javascript">
@@ -404,14 +412,7 @@
 
 </script>
 
-<style type="text/css">
-        #mynetwork {
-            flex: 1;
-            height: 550px;
-            border: 1px solid lightgray;
-            background-color: #f8f8f8;
-        }
-</style>
+
     <!-- jQuery -->
 <script src="{% static "bower_components/jquery/dist/jquery.min.js" %}"></script>
 
