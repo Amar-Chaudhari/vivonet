@@ -55,11 +55,18 @@
               </div>
             </div>
               {% if error == True%}
-                <span class="error text-danger">Some Errors occurred in the backend</span>
+                <div class="alert alert-danger" role="alert">
+                  <strong>Oh snap!</strong> Intent Configuration Failed.
+                </div>
               {% endif %}
+             {% if succeed == True%}
+             <div class="alert alert-success" role="alert">
+              <strong>Well done!</strong> Intent Successfully Configured.
+            </div>
+            {% endif %}
 
 			<div class="form-actions">
-              <button type="submit" onsubmit="validateForm()" method="post" class="btn btn-success">Submit</button>
+              <button type="submit" onsubmit="validateForm()" class="btn btn-success">Submit</button>
             </div>
           </form>
         </div>
