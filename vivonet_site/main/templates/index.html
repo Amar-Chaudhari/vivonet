@@ -1,63 +1,9 @@
-{% load i18n %}
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>VIVONET</title>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap.min.css"%}">
-<!--><!-->
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap-responsive.min.css"%}">
-<!--><!-->
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/fullcalendar.css"%}">
-<!--><!-->
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/matrix-style.css" %}">
-<!--><!-->
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/matrix-media.css" %}">
-<!--><!-->
-<link rel="stylesheet" href="{% static "bower_components/html-components/font-awesome/css/font-awesome.css"  %}">
-<!--><!-->
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/jquery.gritter.css" %}">
-<!--><!-->
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
-</head>
-<body>
 
-<!--Header-part-->
-<div id="header">
-  <h1><a href="/">VIVoNET</a></h1>
-</div>
-<!--close-Header-part--> 
-
-
-<!--top-Header-menu-->
-<div id="user-nav" class="navbar navbar-inverse">
-  <ul class="nav">
-    <li  class="dropdown" id="profile-messages" ><a title="" href="#" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle"><i class="icon icon-user"></i>  <span class="text">Welcome User</span><b class="caret"></b></a>
-      <ul class="dropdown-menu">
-        <li><a href="#"><i class="icon-user"></i> My Profile</a></li>
-        <li class="divider"></li>
-        <li><a href="login.html"><i class="icon-key"></i> Log Out</a></li>
-      </ul>
-    </li>
-    <li class=""><a title="" href="#"><i class="icon icon-cog"></i> <span class="text">Settings</span></a></li>
-    <li class=""><a title="" href="{% url 'main_urls:logout' %}"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
-  </ul>
-</div>
-<!--close-top-Header-menu-->
-
-<!--sidebar-menu-->
-<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
-  <ul>
-    <li class="active"><a href="/"><i class="icon icon-home"></i> <span>Home</span></a> </li>
-    <li><a href="index.html"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
-    <li><a href="/topology"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
-    <li><a href="index.html"><i class="icon icon-signal"></i> <span>Network Statistics</span></a> </li>
-  </ul>
-</div>
-<!--sidebar-menu-->
-
+<!--close-left-menu-stats-sidebar-->
+{% block content %}
 <!--main-container-part-->
 <div id="content">
 <!--breadcrumbs-->
@@ -73,13 +19,17 @@
   <div class="container-fluid">
     <div class="quick-actions_homepage">
       <ul class="quick-actions">
-        <li class="bg_lb"> <a href="index.html"> <i class="icon-dashboard"></i> Home </a> </li>
-        <li class="bg_ls"> <a href="/intentengine"> <i class="icon-tint"></i> Intent Engine </a> </li>
-        <li class="bg_lg span3"> <a href="/topology"> <i class="icon-fullscreen"></i> Network Topology</a> </li>
-        <li class="bg_lo"> <a href="charts.html"> <i class="icon-signal"></i> Network Statistics </a> </li>
+        <li class="bg_lb"> <a href="{% url 'main_urls:index' %}"> <i class="icon-dashboard"></i> Home </a> </li>
+        <li class="bg_ls"> <a href="{% url 'main_urls:intent_engine' %}"> <i class="icon-tint"></i> Intent Engine </a> </li>
+        <li class="bg_lg span3"> <a href="{% url 'main_urls:topology' %}"> <i class="icon-fullscreen"></i> Network Topology</a> </li>
       </ul>
     </div>
-<!--End-Action boxes-->    
+<!--End-Action boxes-->
+
+<!--End-Chart-box-->
+    <hr/>
+  </div>
+</div>
 
 <!--End-Chart-box--> 
     <hr/>
@@ -87,60 +37,4 @@
 </div>
 
 <!--end-main-container-part-->
-
-<!--Footer-part-->
-
-<div class="row-fluid">
-  <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
-</div>
-
-<!--end-Footer-part-->
-
-<script src="{% static "js/excanvas.min.js"%}></script> 
-<script src="{% static "js/jquery.min.js"%}></script> 
-<script src="{% static "js/jquery.ui.custom.js"%}></script> 
-<script src="{% static "js/bootstrap.min.js"%}></script> 
-<script src="{% static "js/jquery.flot.min.js"%}></script> 
-<script src="{% static "js/jquery.flot.resize.min.js"%}></script> 
-<script src="{% static "js/jquery.peity.min.js"%}></script> 
-<script src="{% static "js/fullcalendar.min.js"%}></script> 
-<script src="{% static "js/matrix.js"%}></script> 
-<script src="{% static "js/matrix.dashboard.js"%}></script> 
-<script src="{% static "js/jquery.gritter.min.js"%}></script> 
-<script src="{% static "js/matrix.interface.js"%}></script> 
-<script src="{% static "js/matrix.chat.js"%}></script> 
-<script src="{% static "js/jquery.validate.js"%}></script> 
-<script src="{% static "js/matrix.form_validation.js"%}></script> 
-<script src="{% static "js/jquery.wizard.js"%}></script> 
-<script src="{% static "js/jquery.uniform.js"%}></script> 
-<script src="{% static "js/select2.min.js"%}></script> 
-<script src="{% static "js/matrix.popover.js"%}></script> 
-<script src="{% static "js/jquery.dataTables.min.js"%}></script> 
-<script src="{% static "js/matrix.tables.js"%}></script> 
-
-<script type="text/javascript">
-  // This function is called from the pop-up menus to transfer to
-  // a different page. Ignore if the value returned is a null string:
-  function goPage (newURL) {
-
-      // if url is empty, skip the menu dividers and reset the menu selection to default
-      if (newURL != "") {
-      
-          // if url is "-", it is this page -- reset the menu:
-          if (newURL == "-" ) {
-              resetMenu();            
-          } 
-          // else, send page to designated URL            
-          else {  
-            document.location.href = newURL;
-          }
-      }
-  }
-
-// resets the menu selection upon entry to this page:
-function resetMenu() {
-   document.gomenu.selector.selectedIndex = 2;
-}
-</script>
-</body>
-</html>
+{% endblock %}

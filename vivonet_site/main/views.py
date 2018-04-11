@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import requests
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth.decorators import login_required
-
+import logging
 from intents.intent_engine import *
-from intents.alexa import LOGGED_IN_USER
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 @login_required
 def index_view(request):
     LOGGED_IN_USER = request.user.username
     return render(request, 'index.html')
+
 
 @login_required
 def network_topology(request):
@@ -55,7 +58,8 @@ def dropdown_data(request):
                     if intents_all[i].From_Location == intents_all[i + 1].To_Location and intents_all[i].To_Location == \
                             intents_all[i + 1].From_Location:
                         source = \
-                        Customer.objects.filter(Prefix=intents_all[i].Source_IP).values_list('location', flat=True)[0]
+                            Customer.objects.filter(Prefix=intents_all[i].Source_IP).values_list('location', flat=True)[
+                                0]
                         destination = \
                             Customer.objects.filter(Prefix=intents_all[i].Destination_IP).values_list('location',
                                                                                                       flat=True)[
@@ -110,6 +114,30 @@ def customer_data(request):
     except:
         return Response(data)
 
+
 @login_required
 def intentengine(request):
-    return render(request, 'intent_engine.html')
+    if request.method == "GET":
+        return render(request, 'intent_engine.html')
+    elif request.method == "POST":
+        error = False
+        try:
+            intent_type = request.POST.get('intent_type')
+            from_city = request.POST.get('source_location')
+            to_city = request.POST.get('destination_location')
+            if intent_type and from_city and to_city:
+                c = ComputeAndPush('10.0.1.200', from_city, to_city, intent_type)
+                status = c.intentEngine()
+
+                c2 = ComputeAndPush('10.0.1.200', to_city, from_city, intent_type)
+                status2 = c2.intentEngine()
+
+                if status is not False and status2 is not False:
+                    error = False
+                else:
+                    error = True
+                return render(request, 'intent_engine.html', {'error': error})
+        except Exception as e:
+            error = True
+            logging.error(e)
+    return render(request, 'intent_engine.html', {'error': error})

@@ -7,13 +7,13 @@ from main.views import *
 
 urls_basics = [
     url(r'^$', index_view, name='index'),
-    url('topology', network_topology, name='index'),
-    url('testdb', testdb),
+    url('^topology', network_topology, name='topology'),
+    url('^testdb', testdb),
     url('api/dropdown_data$', dropdown_data),
     url('api/customer_data$', customer_data),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': settings.LOGOUT_REDIRECT_URL}, name='logout'),
-    url('intentengine', intentengine),
+    url('^intentengine/$', intentengine,name='intent_engine'),
 ]
 
 urlpatterns = urls_basics
