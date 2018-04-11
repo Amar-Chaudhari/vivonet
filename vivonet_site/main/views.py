@@ -110,6 +110,7 @@ def customer_data(request):
     except:
         return Response(data)
 
+
 @login_required
 def intentengine(request):
     return render(request, 'intent_engine.html')
