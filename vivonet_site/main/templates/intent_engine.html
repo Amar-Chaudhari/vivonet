@@ -1,65 +1,15 @@
-{% load i18n %}
+{% extends 'base.html' %}
+
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>Matrix Admin</title>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap.min.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap-responsive.min.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/colorpicker.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/datepicker.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/uniform.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/select2.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/matrix-style.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/matrix-media.css"%}" />
-<link rel="stylesheet" href="{% static "bower_components/html-components/css/bootstrap-wysihtml5.css"%}" />
-<link href="{% static "bower_components/html-components/font-awesome/css/font-awesome.css"%}" rel="stylesheet" />
-<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
-</head>
-<body>
-
-<!--Header-part-->
-<div id="header">
-  <h1><a href="/">VIVoNET</a></h1>
-</div>
-<!--close-Header-part--> 
-
-
-<!--top-Header-menu-->
-<div id="user-nav" class="navbar navbar-inverse">
-  <ul class="nav">
-    <li  class="dropdown" id="profile-messages" ><a title="" href="#" data-toggle="dropdown" data-target="#profile-messages" class="dropdown-toggle"><i class="icon icon-user"></i>  <span class="text">Welcome User</span><b class="caret"></b></a>
-      <ul class="dropdown-menu">
-        <li><a href="#"><i class="icon-user"></i> My Profile</a></li>
-        <li class="divider"></li>
-        <li><a href="login.html"><i class="icon-key"></i> Log Out</a></li>
-      </ul>
-    </li>
-    <li class=""><a title="" href="#"><i class="icon icon-cog"></i> <span class="text">Settings</span></a></li>
-    <li class=""><a title="" href="login.html"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
-  </ul>
-</div>
-<!--close-top-Header-menu-->
-
-<!--sidebar-menu-->
-<div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
-  <ul>
-    <li><a href="/"><i class="icon icon-home"></i> <span>Home</span></a> </li>
-    <li class="active"><a href="/intentengine"><i class="icon icon-tint"></i> <span>Intent Engine</span></a> </li>
-    <li><a href="/topology"><i class="icon icon-fullscreen"></i> <span>Network Topology</span></a> </li>
-    <li><a href="index.html"><i class="icon icon-signal"></i> <span>Network Statistics</span></a> </li>
-  </ul>
-</div>
-<!--sidebar-menu-->
 
 <!--close-left-menu-stats-sidebar-->
+{% block content %}
 
 <div id="content">
 <div id="content-header">
   <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="tip-bottom">Intent Engine</a> <a href="#" class="current">Common elements</a> </div>
-  <h1>Intent Engine</h1>
+
+    <h1>Intent Engine</h1>
 </div>
 <div class="container-fluid">
   <hr>
@@ -70,39 +20,44 @@
           <h5>Text-based Intent Engine</h5>
         </div>
         <div class="widget-content nopadding">
-          <form name="intent_engine" action="#" method="get" class="form-horizontal">
-            <div class="control-group">
-              <label class="control-label">Select Intent</label>
+          <form name="intent_engine" action="{% url 'main_urls:intent_engine' %}" method="post" class="form-horizontal">
+            {% csrf_token %}
+              <div class="control-group">
+              <label class="control-label">Intent:</label>
               <div class="controls">
                 <select name = "intent_type">
-                  <option>least latency</option>
-                  <option>high bandwidth</option>
-                  <option>least hopcount</option>
+                  <option value="least_latency">least latency</option>
+                  <option value="high_bandwidth">high bandwidth</option>
+                  <option value="least_hop_count">least hopcount</option>
                 </select>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label">Select Source Location</label>
+              <label class="control-label">Source Location:</label>
               <div class="controls">
                 <select name="source_location">
-                  <option>DENVER</option>
-                  <option>SAN FRANCISCO</option>
-                  <option>NEW YORK</option>
-                  <option>CHICAGO</option>
+                  <option value="DENVER">DENVER</option>
+                  <option value="SAN FRANCISCO">SAN FRANCISCO</option>
+                  <option value="NEW YORK">NEW YORK</option>
+                  <option value="CHICAGO">CHICAGO</option>
                 </select>
               </div>
             </div>
             <div class="control-group">
-              <label class="control-label">Select Destination Location</label>
+              <label class="control-label">Destination Location:</label>
               <div class="controls">
-                <select name="dest_location">
-                  <option>DENVER</option>
-                  <option>SAN FRANCISCO</option>
-                  <option>NEW YORK</option>
-                  <option>CHICAGO</option>
+                <select name="destination_location">
+                  <option value="DENVER">DENVER</option>
+                  <option value="SAN FRANCISCO">SAN FRANCISCO</option>
+                  <option value="NEW YORK">NEW YORK</option>
+                  <option value="CHICAGO">CHICAGO</option>
                 </select>
               </div>
             </div>
+              {% if error == True%}
+                <span class="error text-danger">Some Errors occurred in the backend</span>
+              {% endif %}
+
 			<div class="form-actions">
               <button type="submit" onsubmit="validateForm()" method="post" class="btn btn-success">Submit</button>
             </div>
@@ -115,35 +70,5 @@
   </div>
 
 </div></div>
-<!--Footer-part-->
-<div class="row-fluid">
-  <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
-</div>
-<!--end-Footer-part--> 
-<script src="{% static "bower_components/html-components/js/jquery.min.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/jquery.ui.custom.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/bootstrap.min.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/masked.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/jquery.uniform.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/select2.min.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/matrix.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/wysihtml5-0.3.0.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/jquery.peity.min.js"%}"></script> 
-<script src="{% static "bower_components/html-components/js/bootstrap-wysihtml5.js"%}"></script>
- 
-<script>
-	$('.textarea_editor').wysihtml5();
-</script>
-<script type="text/javascript">
-function validateForm() {
-    var source_location = document.forms["intent_engine"]["source_location"].value;
-    var dest_location = document.forms["intent_engine"]["source_location"].value;
-	console.log(source_location, dest_location)
-    if (source_location == dest_location) {
-        alert("Source and Destination cannot be same");
-        return false;
-    }
-}
-</script>
-</body>
-</html>
+
+{% endblock %}

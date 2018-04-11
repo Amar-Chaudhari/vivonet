@@ -7,7 +7,7 @@ from main.views import *
 
 urls_basics = [
     url(r'^$', index_view, name='index'),
-    url('^topology', network_topology, name='index'),
+    url('^topology', network_topology, name='topology'),
     url('^testdb', testdb),
     url('api/dropdown_data$', dropdown_data),
     url('api/customer_data$', customer_data),
