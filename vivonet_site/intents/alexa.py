@@ -142,6 +142,9 @@ def CreateIntent(session, intent_type, from_city, to_city, confirmation):
                     kwargs['message'] = "The requested intent has been setup."
                 elif check_intent_status == False:
                     kwargs['message'] = "Some error occurred in the back end."
+        elif check == "deny":
+            kwargs['message'] = "Requested intent has been denied."
+
         kwargs.pop('from_city')
         kwargs.pop('intent_type')
         kwargs['launched'] = False
