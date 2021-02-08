@@ -12,7 +12,7 @@ django-six==1.0.4
 djangorestframework==3.7.7
 duo-client==3.1.0
 enum34==1.1.6
-httplib2==0.10.3
+httplib2==0.19.0
 idna==2.6
 ipaddress==1.0.19
 pycparser==2.18
